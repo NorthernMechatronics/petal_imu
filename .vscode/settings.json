@@ -1,0 +1,11 @@
+{
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.buildTask": true,
+    "cmake.configureOnOpen": false,
+    "cmake.configureArgs": [
+        "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/nmsdk2/targets/nm180100/build.cmake",
+        "-DRAT_LORAWAN_ENABLE=ON",
+        "-DRAT_BLE_ENABLE=ON"
+    ],
+    "cmake.generator": "Unix Makefiles"
+}
