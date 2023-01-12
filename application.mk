@@ -6,7 +6,7 @@
 #******************************************************************************
 NMSDK    ?= $(shell pwd)/nmsdk2
 TARGET   := $(NMSDK)/targets/nm180100
-LDSCRIPT := ldscript.ld
+LDSCRIPT := AMA3B1KK.ld
 
 #******************************************************************************
 #
@@ -62,6 +62,9 @@ UPDATE_STORAGE_ADDRESS := 0x80000
 #   INCLUDES += -Iadditional_include_path
 #   VPATH    += additional_source_path
 #******************************************************************************
+DEFINES += -DRAT_LORAWAN_ENABLE
+DEFINES += -DRAT_BLE_ENABLE
+
 INCLUDES += -I.
 INCLUDES += -I./config
 
