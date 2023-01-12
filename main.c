@@ -50,10 +50,6 @@
 #include "ble_task.h"
 #endif
 
-#ifdef RAT_OPENTHREAD_ENABLE
-#include "openthread_task.h"
-#endif
-
 #include "application_task.h"
 #include "console_task.h"
 
@@ -195,15 +191,11 @@ void system_setup(void)
 void system_start(void)
 {
 #ifdef RAT_LORAWAN_ENABLE
-//    lorawan_task_create(2);
+    lorawan_task_create(2);
 #endif
 
 #ifdef RAT_BLE_ENABLE
     ble_task_create(2);
-#endif
-
-#ifdef RAT_OPENTHREAD_ENABLE
-    openthread_task_create(2);
 #endif
 
     console_task_create(2, CONSOLE_OUTPUT_UART);

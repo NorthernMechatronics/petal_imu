@@ -1,10 +1,11 @@
 cmake_policy(SET CMP0048 NEW)
 cmake_minimum_required(VERSION 3.13.0)
 
-set(CMAKE_DEBUG_POSTFIX -dbg)
-set(CMAKE_RELEASE_POSTFIX -rel)
-
-set(APPLICATION nmapp2)
+if (NOT "$ENV{APPLICATION}" STREQUAL "")
+    set(APPLICATION $ENV{APPLICATION})
+else()
+    set(APPLICATION default_app_name)
+endif()
 
 set(TARGET "nm180100" CACHE STRING "" FORCE)
 set(BSP_TARGET nm180100evb CACHE STRING "" FORCE)
@@ -140,7 +141,7 @@ target_sources(
 add_custom_command(
     TARGET ${APPLICATION}
     POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -Obinary ${APPLICATION} ${APPLICATION}.bin
+    COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE_NAME:${APPLICATION}> $<TARGET_FILE_NAME:${APPLICATION}>.bin
 )
 
 add_dependencies(${APPLICATION} hal bsp rtos ${BLE_LIBS} ${LORAWAN_LIBS})
