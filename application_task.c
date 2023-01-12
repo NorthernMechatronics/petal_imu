@@ -97,20 +97,27 @@ static void application_on_join_request(LmHandlerJoinParams_t *params)
 
 static void application_on_receive(LmHandlerAppData_t *appData, LmHandlerRxParams_t *params)
 {
-    am_util_stdio_printf("\n\rReceived Data\n\r");
-    am_util_stdio_printf("COUNTER   : %-4d\n\r", params->DownlinkCounter);
-    am_util_stdio_printf("PORT      : %-4d\n\r", appData->Port);
-    am_util_stdio_printf("SLOT      : %-4d\n\r", params->RxSlot);
-    am_util_stdio_printf("DATA RATE : %-4d\n\r", params->Datarate);
-    am_util_stdio_printf("RSSI      : %-4d\n\r", params->Rssi);
-    am_util_stdio_printf("SNR       : %-4d\n\r", params->Snr);
-    am_util_stdio_printf("SIZE      : %-4d\n\r", appData->BufferSize);
-    am_util_stdio_printf("PAYLOAD   :\n\r");
-    for (int i = 0; i < appData->BufferSize; i++)
+    // appData is NULL for beacon messages
+    if (appData)
     {
-        am_util_stdio_printf("%02x ", appData->Buffer[i]);
+        if (appData->Port > 0)
+        {
+            am_util_stdio_printf("\n\rReceived Data\n\r");
+            am_util_stdio_printf("COUNTER   : %-4d\n\r", params->DownlinkCounter);
+            am_util_stdio_printf("PORT      : %-4d\n\r", appData->Port);
+            am_util_stdio_printf("SLOT      : %-4d\n\r", params->RxSlot);
+            am_util_stdio_printf("DATA RATE : %-4d\n\r", params->Datarate);
+            am_util_stdio_printf("RSSI      : %-4d\n\r", params->Rssi);
+            am_util_stdio_printf("SNR       : %-4d\n\r", params->Snr);
+            am_util_stdio_printf("SIZE      : %-4d\n\r", appData->BufferSize);
+            am_util_stdio_printf("PAYLOAD   :\n\r");
+            for (int i = 0; i < appData->BufferSize; i++)
+            {
+                am_util_stdio_printf("%02x ", appData->Buffer[i]);
+            }
+            am_util_stdio_printf("\n\r");
+        }
     }
-    am_util_stdio_printf("\n\r");
 }
 
 static void application_setup_lorawan()
