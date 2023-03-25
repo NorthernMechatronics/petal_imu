@@ -10,8 +10,8 @@ endif()
 set(TARGET "nm180100" CACHE STRING "" FORCE)
 set(BSP_TARGET nm180100evb CACHE STRING "" FORCE)
 
-option(RAT_BLE_ENABLE "" OFF)
-option(RAT_LORAWAN_ENABLE "" OFF)
+option(RAT_BLE_ENABLE "" ON)
+option(RAT_LORAWAN_ENABLE "" ON)
 
 add_subdirectory(nmsdk2)
 

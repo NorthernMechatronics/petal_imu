@@ -154,20 +154,25 @@ static void ble_task_handle_command()
 
 static void ble_task(void *pvParameters)
 {
+    bool_t ble_task_sleep;
+
     ble_stack_started = false;
 
     ble_task_cli_register();
 
     while (1)
     {
+        ble_task_sleep = true;
         ble_task_handle_command();
 
         if (ble_stack_started)
         {
+            WsfTimerSleepUpdate();
             wsfOsDispatcher();
+            ble_task_sleep = wsfOsReadyToSleep();
         }
 
-        if (wsfOsReadyToSleep())
+        if (ble_task_sleep)
         {
             xTaskNotifyWait(0, 1, NULL, portMAX_DELAY);
         }
