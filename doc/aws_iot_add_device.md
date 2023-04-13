@@ -70,4 +70,4 @@ lorawan keys
 9. In the Profiles section, select `demo_us915_a_otaa` created in [Device Profile Creation](#device-profile-creation) and
 `demo_service_profile` created in [Service Profile Creation](#service-profile-creation).
 10. In the Choose destination section, select `demo_destination_role` created in [Destination Configuration](#destination-configuration).
-11. Click Next.
+11. Click **Next**.
