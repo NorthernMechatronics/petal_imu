@@ -14,10 +14,7 @@ by multiple devices. Multiple profiles can exist to support different devices.
 
 1. Login to AWS and type `IoT Core` in the search bar at the top.
 2. Select **IoT Core** in the search result to access the AWS IoT console.
-3. Examine the left menu bar and ensure that the option **LPWAN devices** is avaialble.
-   If not, change the region to one where LoRaWAN is supported.
-   At the time of this writing, both us-east-1 (N. Virginia) and us-west-2 (Oregon) support LoRaWAN.
-4. Select **LPWAN devices** in the left menu bar to expand the menu.
+4. Select **LPWAN devices** in the left panel to expand the menu.
 5. Select **Profiles** in the submenu.
 6. Click on **Add device profile**.
 7. In the **_Select a default profile and customize_** drop down box, select a default profile as a starting point. In this example, we will be using US915-A for the 900MHz ISM Band Class A operation in North America.
@@ -32,6 +29,12 @@ by multiple devices. Multiple profiles can exist to support different devices.
 16. Click **Add device profile** to finish.
 
 ### Service Profile Creation
+1. In the IoT console, select **LPWAN devices** on the left panel to expand the menu.
+2. Select **Profiles** in the submenu.
+3. Click on **Add service profile**.
+4. Enter a name for this service profile.  In this example, we will use `demo_service_profile`.
+5. Leave **AddGWMetaData** enabled.
+6. Click **Add service profile** to save and exit.
 
 ## Destination Configuration
 
