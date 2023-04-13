@@ -22,6 +22,7 @@ A serial command line interface (CLI) is also provided; allowing low level contr
 * Python
 * Git
 * make
+* CMake
 * Visual Studio Code (Optional)
 
 <details>
@@ -163,6 +164,47 @@ Install git by entering the following command in a terminal:
 Make is usually pre-installed in Linux.  If not, enter the following command in a terminal:
 
 ``` sudo apt-get install make ```
+
+</details>
+
+***
+</br>
+
+### Install CMake
+
+<details>
+
+<summary>Windows</summary>
+
+1. Download the CMake Installer binary from https://cmake.org/download/
+
+2. Run the installer and follow the on-screen instructions to complete installation.
+
+3. During installation, ensure that the option to modify the system PATH environment variable is selected.
+
+</details>
+
+<details>
+<summary>Linux</summary>
+
+1. Uninstall the default version using
+
+``` sudo apt remove --purge --auto-remove cmake```
+
+2. Add kitware's signing key
+
+``` wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null ```
+
+3. Add kitware's repository
+
+``` sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main" ```
+
+4. Install cmake
+
+```
+sudo apt update
+sudo apt install cmake
+```
 
 </details>
 
