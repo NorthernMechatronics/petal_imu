@@ -44,6 +44,8 @@ by multiple devices. Multiple profiles can exist to support different devices.
 3. Click **Add destination**.
 4. Enter a name for **Destination name**. In this example, we will use `demo_destination`.
 5. Select **Publish to AWS IoT Core message broker**. This options will route a LoRaWAN message to an MQTT topic.
+For more complicated message routing scenarios such as routing to other AWS services or external providers, please follow the 
+<a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-rules-tutorial.html">AWS Developer Guide</a>.
 6. Provide a name for the MQTT topic. In this example, we will use `dt/demo`.
 7. In the Permissions section, select **Select an existing service role**.
 8. Select the role `demo_destination_role` created during [IAM Policy and Role for LoRaWAN Messages](aws_iot_core_integration.md#iam-policy-and-role-for-lorawan-messages).
