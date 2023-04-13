@@ -14,7 +14,7 @@ This guide provides instructions on how to connect the NM180100 to the AWS IoT C
 
 <details>
 
-<summary> IAM Policy and Role Creation for CUPS </summary>
+<summary> IAM Policy and Role Creation for CUPS (expand for detailed instructions) </summary>
 
 ### IAM Policy and Role Creation for CUPS
 #### Overview
@@ -85,7 +85,7 @@ This section outlines the steps to allow the Configuration and Update Server (CU
 </details>
 
 <details>
-<summary> IAM Role and Policy for LoRaWAN Messages </summary>
+<summary> IAM Role and Policy for LoRaWAN Messages (expand for detailed instructions) </summary>
 
 ### IAM Policy and Role for LoRaWAN Messages
 
