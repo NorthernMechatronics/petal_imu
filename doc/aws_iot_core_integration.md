@@ -23,8 +23,10 @@ This section outlines the steps to allow the Configuration and Update Server (CU
 #### Setup Policy
 1. Login to AWS and type IAM in the search bar at the top.
 2. Select **IAM** in the search result to access the IAM console.
+![aws_iam](./res/aws/aws_iam.jpeg)
 3. In the IAM console, select **Policies** in the left menu bar.
 4. In the search box next to **Filter policies**, enter ``AWSIotWirelessGatewayCertManager``.
+![aws_iam](./res/aws/aws_iam_policies.jpeg)
 5. If the search result is empty, click on **Create policy** and continue with the next step.  Otherwise skip to [Setup Role](#setup-role)
 6. Select the **JSON** tab and replace the content with the following:
 ```
@@ -45,8 +47,10 @@ This section outlines the steps to allow the Configuration and Update Server (CU
     ]
 }
 ```
+![aws_iam](./res/aws/aws_iam_policy_json.jpeg)
 7. Click on **Next: Tags** and then **Next: Review**.
 8. On the Review policy page and in text box next to **Name**, enter ``AWSIotWirelessGatewayCertManager``.
+![aws_iam](./res/aws/aws_iam_policy_review.jpeg)
 9. Select **Create policy** and a confirmation message pops up showing that the policy has been created. 
 
 #### Setup Role
