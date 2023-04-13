@@ -125,4 +125,28 @@ This section outlines the steps needed to create the role and policy needed to p
 13. Select the policy by clicking on the checkbox.  Select **Next: Tags** and then **Next: Review**.
 14. In the textbox beside **Role name**, enter a name of your choice.  In this example, we will use ``demo_destination_role``.
 18. Select **Create role** and a confirmation message will show indicating that the role has been created.
+
+#### Update Trust Relationship
+19. Back in the IAM console, select **Roles** again.
+20. Enter ``demo_destination_role`` in the search box or the name that you have choosen in the previous section.
+21. Choose **demo_destination_role** in the result to edit the role.
+22. Select the **Trust relationships** tab, and click on **Edit trust relationship**.
+23. Replace the content in the **Policy Document** with the following:
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "iotwireless.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {}
+        }
+    ]
+}
+```
+24. Click **Update Trust Policy** to save your changes and exit.
+
 </details>
