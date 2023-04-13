@@ -1,7 +1,5 @@
 # Adding a Gateway to AWS IoT
 
-## Add a in AWS IoT Core
-
 1. Login to AWS and type `IoT Core` in the search bar at the top.
 2. Select **IoT Core** in the search result to access the AWS IoT console.
 3. Examine the left panel and ensure that the option **LPWAN devices** is avaialble.
