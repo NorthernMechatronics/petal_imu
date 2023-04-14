@@ -17,6 +17,7 @@ by multiple devices. Multiple profiles can exist to support different devices.
 3. Select **LPWAN devices** in the left panel to expand the menu.
 4. Select **Profiles** in the submenu.
 5. Click on **Add device profile**.
+   ![aws_iot_core_profiles.png](res/aws/aws_iot_core_profiles.png)
 6. In the **Select a default profile and customize** drop down box, select a default profile as a starting point. In this example, we will be using US915-A for the 900MHz ISM Band Class A operation in North America.
 7. Enter a profile name. In this example, we will use `demo_us915_a_otaa`.
 8. Select US915 in **Frequency band**.
@@ -27,21 +28,24 @@ by multiple devices. Multiple profiles can exist to support different devices.
 13. Ensure **Supports Join** is selected which enables over the air activation.
 14. Ensure that **Supports 32-bit FCnt** is enabled.
 15. Click **Add device profile** to finish.
+   ![aws_iot_core_add_profile.png](res/aws/aws_iot_core_add_profile.png)
 
 ### Service Profile Creation
 
 1. In the IoT console, select **LPWAN devices** on the left panel to expand the menu.
 2. Select **Profiles** in the submenu.
-3. Click on **Add service profile**.
+3. Click on **Add service profile** in the Service profiles section.
 4. Enter a name for this service profile. In this example, we will use `demo_service_profile`.
 5. Leave **AddGWMetaData** enabled.
 6. Click **Add service profile** to save and exit.
+   ![aws_iot_core_add_service.png](res/aws/aws_iot_core_add_service.png)
 
 ## Destination Configuration
 
 1. In the IoT console, select **LPWAN devices** on the left panel to expand the menu.
 2. Select **Destinations** in the submenu.
 3. Click **Add destination**.
+   ![aws_iot_core_destinations.png](res/aws/aws_iot_core_destinations.png)
 4. Enter a name for **Destination name**. In this example, we will use `demo_destination`.
 5. Select **Publish to AWS IoT Core message broker**. This options will route a LoRaWAN message to an MQTT topic.
    For more complicated message routing scenarios such as routing to other AWS services or external providers, please follow the
@@ -51,12 +55,14 @@ by multiple devices. Multiple profiles can exist to support different devices.
 8. Select the role `demo_destination_role` created during [IAM Policy and Role for LoRaWAN Messages](aws_iot_core_integration.md#iam-policy-and-role-for-lorawan-messages).
 9. Leave **Attach policy to role** checked.
 10. Click **Add destination** to save and exit.
+   ![aws_iot_core_add_destination.png](res/aws/aws_iot_core_add_destination.png)
 
 ## Add a LoRaWAN Device to AWS IoT Core
 
 1. In the IoT console, select **LPWAN devices** on the left panel to expand the menu.
 2. Select **Devices** in the submenu.
 3. Click **Add wireless device**.
+   ![aws_iot_core_devices.png](res/aws/aws_iot_core_devices.png)
 4. In the **Wireless device specification** drop down box, select **OTA v1.1**. This should match the device profile parameters from [Device Profile Creation](#device-profile-creation). In this case, the are LoRaWAN version 1.1 and over the air activation enabled.
 5. Enter the DevEUI, AppKey, NwkKey, and the JoinEUI. On the NM180100EVB running nmapp2, these values can be displayed using the command
 
@@ -71,3 +77,4 @@ lorawan keys
 `demo_service_profile` created in [Service Profile Creation](#service-profile-creation).
 10. In the Choose destination section, select `demo_destination_role` created in [Destination Configuration](#destination-configuration).
 11. Click **Next**.
+   ![aws_iot_core_add_device.png](res/aws/aws_iot_core_add_device.png)
