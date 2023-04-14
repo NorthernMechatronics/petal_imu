@@ -23,7 +23,7 @@ by multiple devices. Multiple profiles can exist to support different devices.
 8. Select US915 in **Frequency band**.
 9. Select 1.1 in **MAC version**.
 10. Leave the **Regional parameters version** to the default. RP002-1.0.1 at the time of this writing.
-11. Change MaxEIRP to 15. This parameter refers to the maximum radiated power which is the sum of the conducted power and the maximum antenna gain. For the NM180100, the conducted power is around 21.5dBm at the antenna pin. If the maximum antenna gain is 2dBi, then the EIRP of this device is 23.5dBm. However, AWS restricts the entry to less than 16. This does not impact device performance and is used by the link control algorithm to determine the optimal modulation parameters.
+11. Change MaxEIRP to 15. This parameter refers to the maximum radiated power which is the logarithmic sum of the conducted power and the maximum antenna gain. For the NM180100, the conducted power is around 21.5dBm at the antenna pin. If the maximum antenna gain is 2dBi, then the EIRP of this device is 23.5dBm. At the time of this writing, AWS restricts this entry to a value less than 16. This does not impact device performance and is used by the link control algorithm of the LoRaWAN Network Server to determine the optimal modulation parameters.
 12. Enable additional classes if your application supports them. While the NMSDK2 supports all three classes, Class B operation requires support from the gateway manufacturer as a Class B gateway requires a GPS and the concentrator chip must be provided with a GPS derived pps clock. In this example, we will leave both Class B and C disabled.
 13. Ensure **Supports Join** is selected which enables over the air activation.
 14. Ensure that **Supports 32-bit FCnt** is enabled.
