@@ -35,24 +35,25 @@ This section outlines the steps to allow the Configuration and Update Server (CU
 5. If the search result is empty, click on **Create policy** and continue with the next step. Otherwise skip to [Setup Role](#setup-role)
 6. Select the **JSON** tab and replace the content with the following:
 
-    ```
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "IoTWirelessGatewayCertManager",
-                "Effect": "Allow",
-                "Action": [
-                    "iot:CreateKeysAndCertificate",
-                    "iot:DescribeCertificate",
-                    "iot:ListCertificates",
-                    "iot:RegisterCertificate"
-                ],
-                "Resource": "*"
-            }
-        ]
-    }
-    ```
+   ```
+   {
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Sid": "IoTWirelessGatewayCertManager",
+               "Effect": "Allow",
+               "Action": [
+                   "iot:CreateKeysAndCertificate",
+                   "iot:DescribeCertificate",
+                   "iot:ListCertificates",
+                   "iot:RegisterCertificate"
+               ],
+               "Resource": "*"
+           }
+       ]
+   }
+   ```
+
    ![aws_iam_gw_create_policy_json](./res/aws/aws_iam_gw_create_policy_json.png)
 
 7. Click on **Next: Tags** and then **Next: Review**.
@@ -119,22 +120,23 @@ This section outlines the steps needed to create the role and policy needed to p
 2. Click on **Create policy**.
 3. Select the **JSON** tab and replace the existing content with the following:
 
-    ```
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": [
-                    "iot:DescribeEndpoint",
-                    "iot:Publish"
-                ],
-                "Resource": "*"
-            }
-        ]
-    }
-    ```
-    ![aws_iam_dst_create_policy](./res/aws/aws_iam_dst_create_policy_json.png)
+   ```
+   {
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Effect": "Allow",
+               "Action": [
+                   "iot:DescribeEndpoint",
+                   "iot:Publish"
+               ],
+               "Resource": "*"
+           }
+       ]
+   }
+   ```
+
+   ![aws_iam_dst_create_policy](./res/aws/aws_iam_dst_create_policy_json.png)
 
 4. Click on **Next: Tags** and then **Next: Review**.
 5. On the Review policy page and in text box next to **Name**, enter a name of your choice. In this example, we will use `demo_destination_policy`.

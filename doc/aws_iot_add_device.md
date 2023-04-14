@@ -28,7 +28,7 @@ by multiple devices. Multiple profiles can exist to support different devices.
 13. Ensure **Supports Join** is selected which enables over the air activation.
 14. Ensure that **Supports 32-bit FCnt** is enabled.
 15. Click **Add device profile** to finish.
-   ![aws_iot_core_add_profile.png](res/aws/aws_iot_core_add_profile.png)
+    ![aws_iot_core_add_profile.png](res/aws/aws_iot_core_add_profile.png)
 
 ### Service Profile Creation
 
@@ -55,7 +55,7 @@ by multiple devices. Multiple profiles can exist to support different devices.
 8. Select the role `demo_destination_role` created during [IAM Policy and Role for LoRaWAN Messages](aws_iot_core_integration.md#iam-policy-and-role-for-lorawan-messages).
 9. Leave **Attach policy to role** checked.
 10. Click **Add destination** to save and exit.
-   ![aws_iot_core_add_destination.png](res/aws/aws_iot_core_add_destination.png)
+    ![aws_iot_core_add_destination.png](res/aws/aws_iot_core_add_destination.png)
 
 ## Add a LoRaWAN Device to AWS IoT Core
 
@@ -74,7 +74,8 @@ lorawan keys
 7. Expand the FUOTA configuration section. This section specifies the settings for firmware update over the air which is supported by NM180100. Ensure that **This device supports firmware update over the air (FUOTA)** is enabled. Leave all the port numbers to the default. This will be used in other tutorials.
 8. In the Thing association section, disable associate a thing with your wireless device if you are not using fleet management.
 9. In the Profiles section, select `demo_us915_a_otaa` created in [Device Profile Creation](#device-profile-creation) and
-`demo_service_profile` created in [Service Profile Creation](#service-profile-creation).
+   `demo_service_profile` created in [Service Profile Creation](#service-profile-creation).
 10. In the Choose destination section, select `demo_destination_role` created in [Destination Configuration](#destination-configuration).
 11. Click **Next**.
-   ![aws_iot_core_add_device.png](res/aws/aws_iot_core_add_device.png)
+    ![aws_iot_core_add_device.png](res/aws/aws_iot_core_add_device.png)
+12. Leave all entries empty unless you are using geolocation solver (this is a paid service). Click **Add device**.

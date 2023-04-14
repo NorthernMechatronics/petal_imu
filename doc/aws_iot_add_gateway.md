@@ -14,16 +14,16 @@
 8. Fill in the name if desired.
 9. Uncheck **Associate your gateway with an AWS IoT thing** if you do not use the fleet management feature.
 10. Click on **Add gateway**.
-   ![aws_iot_core_gw_add.png](res/aws/aws_iot_core_gw_add.png)
+    ![aws_iot_core_gw_add.png](res/aws/aws_iot_core_gw_add.png)
 11. On the **Configure your Gateway** page, find the section titled Gateway certificate and click on **Create certificate**.
 12. This will generate a certificate file and a key file which will be used by Basic Station in your LoRaWAN gateway to connect to CUPS.
 13. Click on **Download certificate files** and save them to your computer.
-   ![aws_iot_core_gw_create_certificates.png](res/aws/aws_iot_core_gw_create_certificates.png)
+    ![aws_iot_core_gw_create_certificates.png](res/aws/aws_iot_core_gw_create_certificates.png)
 14. In the section Provisioning Credentials, click on **Download server trust certificates** to download the CUPS and LNS server trust certificates.
 15. Copy the CUPS and LNS endpoints and save them for use when configuring your LoRaWAN gateway.
 16. In the section Gateway permissions, select **IotWirelessGatewayCertManagerRole** that you have created during [IAM Policy and Role Creation for CUPS](aws_iot_core_integration.md#iam-policy-and-role-creation-for-cups) step.
 17. Click on **Submit** to add the gateway to AWS IoT Core.
-   ![aws_iot_core_gw_provisioning.png](res/aws/aws_iot_core_gw_provisioning.png)
+    ![aws_iot_core_gw_provisioning.png](res/aws/aws_iot_core_gw_provisioning.png)
 
 ## Configure Gateway to Commmunicate with AWS IoT Core
 
