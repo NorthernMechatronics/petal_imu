@@ -82,9 +82,8 @@ This section outlines the steps to allow the Configuration and Update Server (CU
 
 19. Back in the IAM console, select **Roles** again.
 20. Enter `IotWirelessGatewayCertManagerRole` in the search box or the name that you have choosen in the previous section.
-21. Choose **demo_destination_role** in the result to edit the role.
-22. Select the **Trust relationships** tab, and click on **Edit trust policy**.
-23. Replace the content with the following:
+21. Select the **Trust relationships** tab, and click on **Edit trust policy**.
+22. Replace the content with the following:
 
 ```
 {
@@ -101,7 +100,7 @@ This section outlines the steps to allow the Configuration and Update Server (CU
 }
 ```
 
-24. Click **Update Policy** to save your changes and exit.
+23. Click **Update Policy** to save your changes and exit.
 
 </details>
 

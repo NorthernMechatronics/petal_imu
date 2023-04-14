@@ -27,4 +27,4 @@
 
 ## Configure Gateway to Commmunicate with AWS IoT Core
 
-Follow the manufacturer instructions of your gateway to configure and connect the gateway to AWS.
+Follow the manufacturer instructions of your gateway to configure and connect the gateway to AWS.  Note that network administrator access maybe required to add the gateawy to your organization's network.
