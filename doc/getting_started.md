@@ -1,6 +1,7 @@
-# Northern Mechatronics Application Template 2.0
+# Getting Started
+Northern Mechatronics Application Template 2.0
 
-![NM180100EVB](doc/res/nm180100evb.png)
+![NM180100EVB](./res/nm180100evb.png)
 ## Overview
 This template application aims to provide a framework for IoT applications using the NM180100 and NMSDK2.  Developers are encouraged to utilize this template as a starting point for their application development.
 
@@ -8,7 +9,9 @@ This application template instantiates the LoRaWAN stack and a BLE stack with th
 
 A serial command line interface (CLI) is also provided; allowing low level control of various hardware peripherals and communication stacks operations during runtime.  On the NM180100EVB evaluation board, the serial CLI can be operated in tandem with the built-in J-Link debugger over a single USB connection.
 
+---
 </br>
+
 
 ## Pre-requisites 
 ### Hardware
@@ -46,7 +49,7 @@ The ARM GNU Toolchain is used for compiling and building.
  
 2. Add the compiler to your PATH using the **Add path to environment variable** checkbox.
 
-![Arm Compiler Path](doc/res/ArmCompilerPathv11.png)
+![Arm Compiler Path](./res/ArmCompilerPathv11.png)
 
 </details>
 
@@ -95,7 +98,7 @@ Download the official J-Link Software and Documentation pack. The exact version 
 
 2. Use the Installation Wizard to add Python 3 to your PATH. 
 
-![Python Installer](doc/res/PythonInstaller.png)
+![Python Installer](./res/PythonInstaller.png)
 
 3. Verify that the installation was successful by running the following command in a command prompt:
 
@@ -124,7 +127,7 @@ Python is usually pre-installed in Linux.  If not, you can run the following com
 2. Install the appropriate version for your operating system.
 3. Select VS Code as the Git’s default editor if you are developing with Visual Studio Code
 
-![Git VS Code Selected](doc/res/GitVSCodeSelected.png)
+![Git VS Code Selected](./res/GitVSCodeSelected.png)
 
 4. Leave all other settings as default for the rest of the install options.
 </details>
@@ -222,11 +225,11 @@ Microsoft Visual Studio Code (VS Code) is a source-code editor made by Microsoft
 
 2. On the **Select Additional Tasks** screen of the installation wizard, enable the **Add to PATH (requires shell restart)** checkbox. 
 
-![VS Code Installation with PATH checked](doc/res/VSCodePath.png)
+![VS Code Installation with PATH checked](./res/VSCodePath.png)
 
 3. Click the **Install** button. 
 
-![VS Code installation confirmation](doc/res/VSCodeInstall.png)
+![VS Code installation confirmation](./res/VSCodeInstall.png)
 
 4. VS Code should now be installed.
 
@@ -262,6 +265,7 @@ Microsoft Visual Studio Code (VS Code) is a source-code editor made by Microsoft
 
 </details>
 
+---
 </br>
 
 ## Clone the Repositories
@@ -300,7 +304,7 @@ To clone the repositories directly within VS Code:
 
 8. When the folder is opened, pop-up messages may appear asking you to install the recommended extensions.  They are required to build and debug your project from within the VS Code environment. 
 
-![Recommended Extensions](doc/res/RecommendedPopup.png)
+![Recommended Extensions](./res/RecommendedPopup.png)
 
 9. If no pop-up appears, follow these instructions to install our recommended extensions:
     1. Open the nmapp2 folder in VS Code.
@@ -316,6 +320,7 @@ To clone the repositories directly within VS Code:
 
 </details>
 
+---
 </br>
 
 ## Build the Application
@@ -340,7 +345,7 @@ To build within VS Code, press `CTRL+SHIFT+B` and select **build all**.  Alterna
 
 This will build the entire SDK and the application for both debug and release mode.  When the build completes and is successful, the output operation should resemble the following image:
 
-![Run Build DebugOutput](doc/res/RunBuildDebugOutput.png)
+![Run Build DebugOutput](./res/RunBuildDebugOutput.png)
 
 There are three build options pre-defined in VS Code.  They are **build all**,
 **build debug**, and **build release**.  The build process generates all the
@@ -352,6 +357,7 @@ whereas release output has the suffix `-rel`.  In this example, they are:
 
 </details>
 
+---
 </br>
 
 ## Flash and Debug
@@ -497,6 +503,6 @@ To flash and debug in VS Code, simply:
 
 3. The screen should look like the following when the debugger starts:
 
-![DebuggingStarted](doc/res/DebuggingStarted.png)
+![DebuggingStarted](./res/DebuggingStarted.png)
 
 </details>

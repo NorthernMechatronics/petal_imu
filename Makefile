@@ -43,7 +43,7 @@ LFLAGS_DBG += $(patsubst lib%.a,-l%,$(subst :, , $(LIBS_DBG)))
 LFLAGS_DBG += --specs=nano.specs
 LFLAGS_DBG += --specs=nosys.specs
 LFLAGS_DBG += -Wl,--end-group
-LFLAGS_REL += -Wl,--gc-sections
+LFLAGS_DBG += -Wl,--gc-sections
 
 
 LIBS_REL += $(HAL_LIB_REL)
