@@ -1,11 +1,13 @@
 cmake_policy(SET CMP0048 NEW)
 cmake_minimum_required(VERSION 3.13.0)
 
-if (NOT "$ENV{APPLICATION}" STREQUAL "")
-    set(APPLICATION $ENV{APPLICATION})
-else()
-    set(APPLICATION default_app_name)
-endif()
+# if (NOT "$ENV{APPLICATION}" STREQUAL "")
+#     set(APPLICATION $ENV{APPLICATION})
+# else()
+#     set(APPLICATION default_app_name)
+# endif()
+
+get_filename_component(APPLICATION ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
 
 set(TARGET "nm180100" CACHE STRING "" FORCE)
 set(BSP_TARGET nm180100evb CACHE STRING "" FORCE)
