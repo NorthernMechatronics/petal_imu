@@ -209,13 +209,13 @@ pin
     name            = LED0
     desc            = The LED nearest the end of the board.
     pinnum          = 17
-    func_sel        = AM_HAL_PIN_10_GPIO
+    func_sel        = AM_HAL_PIN_17_GPIO
     drvstrength     = 2
 
 pin
     name            = LED1
     pinnum          = 7
-    func_sel        = AM_HAL_PIN_30_GPIO
+    func_sel        = AM_HAL_PIN_7_GPIO
     drvstrength     = 2
 
 # *****************************************************************************
