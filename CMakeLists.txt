@@ -9,11 +9,28 @@ cmake_minimum_required(VERSION 3.13.0)
 
 get_filename_component(APPLICATION ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
 
+if (NOT "$ENV{APPLICATION_NAME}" STREQUAL "")
+    set(APPLICATION_NAME $ENV{APPLICATION_NAME})
+else()
+    set(APPLICATION_NAME ${APPLICATION})
+endif()
+
 set(TARGET "nm180100" CACHE STRING "" FORCE)
-set(BSP_TARGET nm180100evb CACHE STRING "" FORCE)
 
 option(RAT_BLE_ENABLE "" ON)
 option(RAT_LORAWAN_ENABLE "" ON)
+option(BSP_NM180100EVB "" OFF)
+option(BSP_NM180310 "" OFF)
+
+if (BSP_NM180100EVB)
+add_definitions(-DBSP_NM180100EVB)
+set(BSP_TARGET_DIR nm180100evb CACHE STRING "" FORCE)
+endif()
+
+if (BSP_NM180310)
+add_definitions(-DBSP_NM180310)
+set(BSP_TARGET_DIR nm180310 CACHE STRING "" FORCE)
+endif()
 
 add_subdirectory(nmsdk2)
 
@@ -23,7 +40,7 @@ add_executable(${APPLICATION})
 set_target_properties(
     ${APPLICATION}
     PROPERTIES
-        OUTPUT_NAME ${APPLICATION}-$<CONFIG>
+        OUTPUT_NAME ${APPLICATION_NAME}
         SUFFIX ".axf"
 )
 
@@ -121,7 +138,7 @@ target_include_directories(
     ${BLE_INCLUDES}
     ${LORAWAN_INCLUDES}
     ${PROJECT_SOURCE_DIR}/bsp
-    ${PROJECT_SOURCE_DIR}/bsp/${BSP_TARGET}
+    ${PROJECT_SOURCE_DIR}/bsp/${BSP_TARGET_DIR}
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/config
     ${PROJECT_SOURCE_DIR}/utils/bootloader

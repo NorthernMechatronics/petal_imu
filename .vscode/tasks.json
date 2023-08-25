@@ -6,14 +6,14 @@
   "tasks": [
     {
       "type": "cmake",
-      "label": "CMake: build",
+      "label": "CMake: build nmapp2",
       "command": "build",
       "targets": [
-        "all"
+        "${workspaceFolderBasename}"
       ],
       "group": "build",
       "problemMatcher": [],
-      "detail": "CMake template build task"
+      "detail": "CMake build nmapp2 (vscode task)"
     }
   ]
 }
