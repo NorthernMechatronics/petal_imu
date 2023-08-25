@@ -20,6 +20,13 @@ add_subdirectory(nmsdk2)
 project(${APPLICATION})
 
 add_executable(${APPLICATION})
+set_target_properties(
+    ${APPLICATION}
+    PROPERTIES
+        OUTPUT_NAME ${APPLICATION}-$<CONFIG>
+        SUFFIX ".axf"
+)
+
 add_subdirectory(bsp)
 
 if (RAT_BLE_ENABLE)
@@ -144,7 +151,8 @@ target_sources(
 add_custom_command(
     TARGET ${APPLICATION}
     POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE_NAME:${APPLICATION}> $<TARGET_FILE_NAME:${APPLICATION}>.bin
+    COMMAND ${CMAKE_OBJDUMP} -S $<TARGET_FILE_NAME:${APPLICATION}> > $<TARGET_FILE_BASE_NAME:${APPLICATION}>.lst
+    COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE_NAME:${APPLICATION}> $<TARGET_FILE_BASE_NAME:${APPLICATION}>.bin
 )
 
 add_dependencies(${APPLICATION} hal bsp rtos ${BLE_LIBS} ${LORAWAN_LIBS})
