@@ -83,14 +83,15 @@ endif()
 target_link_libraries(
     ${APPLICATION}
     PRIVATE
+    PUBLIC
+        -T${PROJECT_SOURCE_DIR}/AMA3B1KK.ld
+        -static
+        -Wl,--start-group
         ${BLE_LIBS}
         ${LORAWAN_LIBS}
         rtos
         bsp
         hal
-    PUBLIC
-        -T${PROJECT_SOURCE_DIR}/AMA3B1KK.ld
-        -Wl,--start-group
         -lm
         -lc
         -lgcc
