@@ -117,6 +117,7 @@ am_bootloader_image_t g_sImage =
     DEFAULT_OVERRIDE_POLARITY,
     0,
     0,
+    0,
     0
 };
 

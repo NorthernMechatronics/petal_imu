@@ -17,10 +17,12 @@ endif()
 
 set(TARGET "nm180100" CACHE STRING "" FORCE)
 
-option(RAT_BLE_ENABLE "" ON)
-option(RAT_LORAWAN_ENABLE "" ON)
 option(BSP_NM180100EVB "" OFF)
 option(BSP_NM180310 "" OFF)
+
+option(RAT_BLE_ENABLE "" ON)
+option(RAT_LORAWAN_ENABLE "" ON)
+option(TF_ENABLE "" OFF)
 
 if (BSP_NM180100EVB)
 add_definitions(-DBSP_NM180100EVB)
@@ -104,21 +106,43 @@ if (RAT_LORAWAN_ENABLE)
     )
 endif()
 
+if (TF_ENABLE)
+    message("Tensorflow enabled")
+    set(TF_DEFINES
+        -DTF_ENALBE
+        -DGEMMLOWP_ALLOW_SLOW_SCALAR_FALLBACK
+        -DTF_LITE_STATIC_MEMORY
+        -DTF_LITE_MCU_DEBUG_LOG
+        -DARM_MATH_CM4
+    )
+
+    set(TF_INCLUDES
+        ${TFLM_INCLUDES}
+    )
+
+    set(TF_LIBS
+        tflm
+    )
+endif()
+
 target_link_libraries(
     ${APPLICATION}
-    PRIVATE
     PUBLIC
         -T${PROJECT_SOURCE_DIR}/AMA3B1KK.ld
         -static
         -Wl,--start-group
+        -L${CMSIS_LIB_DIR}
         ${BLE_LIBS}
         ${LORAWAN_LIBS}
+        ${TF_LIBS}
         rtos
         bsp
         hal
         -lm
         -lc
         -lgcc
+        -lCMSISDSP
+        -lcmsis-nn
         -Wl,--end-group
         -Wl,--gc-sections
 )
@@ -128,6 +152,7 @@ target_compile_definitions(
     PRIVATE
     ${BLE_DEFINES}
     ${LORAWAN_DEFINES}
+    ${TF_DEFINES}
 )
 
 target_include_directories(
@@ -137,6 +162,7 @@ target_include_directories(
     ${RTOS_INCLUDES}
     ${BLE_INCLUDES}
     ${LORAWAN_INCLUDES}
+    ${TF_INCLUDES}
     ${PROJECT_SOURCE_DIR}/bsp
     ${PROJECT_SOURCE_DIR}/bsp/${BSP_TARGET_DIR}
     ${PROJECT_SOURCE_DIR}
@@ -175,4 +201,4 @@ add_custom_command(
     COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE_NAME:${APPLICATION}> $<TARGET_FILE_BASE_NAME:${APPLICATION}>.bin
 )
 
-add_dependencies(${APPLICATION} hal bsp rtos ${BLE_LIBS} ${LORAWAN_LIBS})
+add_dependencies(${APPLICATION} hal bsp rtos ${BLE_LIBS} ${LORAWAN_LIBS} ${TF_LIBS})
