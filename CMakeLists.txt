@@ -151,6 +151,7 @@ target_sources(
     PRIVATE
     startup_gcc.c
     main.c
+    stub.c
     application_task_cli.c
     application_task.c
     console_task.c
