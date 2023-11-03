@@ -19,6 +19,7 @@ set(TARGET "nm180100" CACHE STRING "" FORCE)
 
 option(BSP_NM180100EVB "" OFF)
 option(BSP_NM180310 "" OFF)
+option(BSP_NM180410 "" OFF)
 
 option(RAT_BLE_ENABLE "" ON)
 option(RAT_LORAWAN_ENABLE "" ON)
@@ -32,6 +33,11 @@ endif()
 if (BSP_NM180310)
 add_definitions(-DBSP_NM180310)
 set(BSP_TARGET_DIR nm180310 CACHE STRING "" FORCE)
+endif()
+
+if (BSP_NM180410)
+add_definitions(-DBSP_NM180410)
+set(BSP_TARGET_DIR nm180410 CACHE STRING "" FORCE)
 endif()
 
 add_subdirectory(nmsdk2)

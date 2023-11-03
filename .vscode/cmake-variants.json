@@ -16,6 +16,13 @@
                 "settings": {
                     "BSP_NM180310": "ON"
                 }
+            },
+            "NM180410": {
+                "short": "NM180410",
+                "long": "NM180410",
+                "settings": {
+                    "BSP_NM180410": "ON"
+                }
             }
         }
     },

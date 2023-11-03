@@ -126,6 +126,42 @@
                 ]
             }
             */
+        },
+        {
+            "type": "cortex-debug",
+            "request": "launch",
+            "name": "NM180410 Debug Launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/NM180410_Debug/${workspaceFolderBasename}_NM180410_Debug.axf",
+            "servertype": "pyocd",
+            "device": "AMA3B1KK-KBR",
+            "interface": "swd",
+            "serialNumber": "",
+            "svdFile": "${workspaceFolder}/nmsdk2/hal/ambiq/pack/SVD/apollo3.svd",
+            "showDevDebugOutput": "none",
+            "serverArgs": [
+                "--target=ama3b1kk_kbr",
+                "--frequency=8MHz"
+            ],
+            "preLaunchTask": "CMake: build",
+        },
+        {
+            "type": "cortex-debug",
+            "request": "attach",
+            "name": "NM180410 Debug Attach",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/NM180410_Debug/${workspaceFolderBasename}_NM180410_Debug.axf",
+            "servertype": "pyocd",
+            "device": "AMA3B1KK-KBR",
+            "interface": "swd",
+            "serialNumber": "",
+            "svdFile": "${workspaceFolder}/nmsdk2/hal/ambiq/pack/SVD/apollo3.svd",
+            "showDevDebugOutput": "none",
+            "serverArgs": [
+                "--target=ama3b1kk_kbr",
+                "--frequency=8MHz"
+            ],
+            "preLaunchTask": "CMake: build",
         }
     ]
 }
