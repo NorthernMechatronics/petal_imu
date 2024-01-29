@@ -712,6 +712,7 @@ pin
     pinnum          = 30
     func_sel        = AM_HAL_PIN_30_GPIO
     drvstrength     = 2
+    GPOutcfg        = pushpull
 
 # *****************************************************************************
 #  Petal Development Board SD Card pins.
@@ -729,6 +730,7 @@ pin
     pinnum          = 19
     func_sel        = AM_HAL_PIN_19_GPIO
     drvstrength     = 2
+    GPOutcfg        = pushpull
 
 pin
     name            = SD_CS
