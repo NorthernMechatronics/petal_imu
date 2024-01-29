@@ -702,3 +702,60 @@ pin
     desc            = Cortex Serial Wire DIO.
     pinnum          = 21
     func_sel        = AM_HAL_PIN_21_SWDIO
+
+# *****************************************************************************
+#  Petal Development Board IO enable pins.
+# *****************************************************************************
+pin
+    name            = IO_EN
+    desc            = IO Enable
+    pinnum          = 30
+    func_sel        = AM_HAL_PIN_30_GPIO
+    drvstrength     = 2
+
+# *****************************************************************************
+#  Petal Development Board SD Card pins.
+# *****************************************************************************
+pin
+    name            = SD_nDET
+    pinnum          = 12
+    func_sel        = AM_HAL_PIN_12_GPIO
+    GPinput         = true
+    intdir          = both
+
+pin
+    name            = SD_EN
+    desc            = SD Card Enable
+    pinnum          = 19
+    func_sel        = AM_HAL_PIN_19_GPIO
+    drvstrength     = 2
+
+pin
+    name            = SD_CS
+    desc            = I/O Master 2 chip select.
+    pinnum          = 11
+    func_sel        = AM_HAL_PIN_11_GPIO
+    GPOutcfg        = pushpull
+
+pin
+    name            = SD_MISO
+    desc            = I/O Master 2 SPI MISO signal.
+    pinnum          = 25 
+    func_sel        = AM_HAL_PIN_25_M2MISO
+    IOMnum          = 2
+
+pin
+    name            = SD_MOSI
+    desc            = I/O Master 0 SPI MOSI signal.
+    pinnum          = 28
+    func_sel        = AM_HAL_PIN_28_M2MOSI
+    drvstrength     = 12
+    IOMnum          = 2
+
+pin
+    name            = SD_SCK
+    desc            = I/O Master 0 SPI SCK signal.
+    pinnum          = 27
+    func_sel        = AM_HAL_PIN_27_M2SCK
+    drvstrength     = 12
+    IOMnum          = 2
