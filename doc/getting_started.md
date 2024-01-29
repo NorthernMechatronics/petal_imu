@@ -20,8 +20,8 @@ A serial command line interface (CLI) is also provided; allowing low level contr
 
 ### Hardware
 
-- An NM180100EVB evaluation board
-- A USB to micro-USB cable to connect the board
+- An NM180100EVB evaluation board or an NM180410 Petal development board
+- A USB to micro-USB cable to connect to the NM180100EVB or a USB Type-C cable for the Petal development board
 - A Linux or Windows machine
 
 ### Software
@@ -29,6 +29,7 @@ A serial command line interface (CLI) is also provided; allowing low level contr
 - ARM GNU Toolchain Compiler
 - Segger J-Link software
 - Python
+- pyOCD
 - Git
 - make
 - CMake
@@ -122,6 +123,37 @@ SEGGER J-Link is used to program and debug the NM180100EVB board.
 Python is usually pre-installed in Linux. If not, you can run the following command in a terminal to install Python
 
 `sudo apt-get install python3`
+
+</details>
+
+---
+
+</br>
+
+### Install pyOCD
+
+pyOCD is needed to flash and debug hardware in the Petal Ecosystem. At the time
+of writing, pyOCD support for the NM180100 has not yet been released to public
+packages. You will have to install pyOCD from the source.
+
+<details>
+
+<summary>Windows/Linux</summary>
+
+1. In a terminal, clone the pyOCD source.
+
+`git clone https://github.com/pyocd/pyOCD.git`
+
+2. Change into the git repository directory and run the following to install:
+
+`python pip install .`
+
+3. Confirm that pyOCD is in your path by running the following command:
+
+`pyocd --version`
+
+4. If the executable is not found, add the path manually. It is usually installed
+   inside the Python Scripts directory.
 
 </details>
 
