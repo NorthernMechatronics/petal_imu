@@ -11,7 +11,8 @@
         "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/nmsdk2/targets/nm180100/build.cmake",
         "-DRAT_LORAWAN_ENABLE=ON",
         "-DRAT_BLE_ENABLE=ON",
-        "-DTF_ENABLE=OFF"
+        "-DTF_ENABLE=OFF",
+        "-DCMSIS_DSP_ENABLE=ON"
     ],
     "cmake.generator": "Unix Makefiles"
 }

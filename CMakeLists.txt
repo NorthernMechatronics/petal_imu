@@ -126,6 +126,10 @@ if (TF_ENABLE)
     )
 endif()
 
+if (CMSIS_DSP_ENABLE)
+    set(CMSIS_DSP_LIBS CMSISDSP)
+endif()
+
 target_link_libraries(
     ${APPLICATION}
     PUBLIC
@@ -135,7 +139,7 @@ target_link_libraries(
         ${BLE_LIBS}
         ${LORAWAN_LIBS}
         ${TF_LIBS}
-        CMSISDSP
+        ${CMSIS_DSP_LIBS}
         rtos
         bsp
         hal
@@ -199,4 +203,4 @@ add_custom_command(
     COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE_NAME:${APPLICATION}> $<TARGET_FILE_BASE_NAME:${APPLICATION}>.bin
 )
 
-add_dependencies(${APPLICATION} hal bsp rtos ${BLE_LIBS} ${LORAWAN_LIBS} ${TF_LIBS} CMSISDSP)
+add_dependencies(${APPLICATION} hal bsp rtos ${BLE_LIBS} ${LORAWAN_LIBS} ${TF_LIBS} ${CMSIS_DSP_LIBS})
