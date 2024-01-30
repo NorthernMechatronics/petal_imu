@@ -37,6 +37,9 @@ target_include_directories(
     PRIVATE
     ${HAL_INCLUDES}
     ${BSP_INCLUDES}
+    ${BSP_PINS_DIR}
+    drivers/bmi270
+    drivers/bmm350
 )
 
 target_sources(
@@ -44,4 +47,13 @@ target_sources(
     am_bsp.c
     ${BSP_PINS_C}
     ${BSP_PINS_H}
+    drivers/bmi270/bmi2_ois.c
+    drivers/bmi270/bmi2.c
+    drivers/bmi270/bmi270_context.c
+    drivers/bmi270/bmi270_hal.c
+    drivers/bmi270/bmi270_maximum_fifo.c
+    drivers/bmi270/bmi270.c
+    drivers/bmm350/bmm350.c
+    drivers/bmm350/bmm350_oor.c
+    drivers/bmm350/bmm350_hal.c
 )

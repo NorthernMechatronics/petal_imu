@@ -152,18 +152,7 @@ int8_t bmi2_interface_init(struct bmi2_dev *bmi, uint8_t intf)
         /* Bus configuration : I2C */
         if (intf == BMI2_I2C_INTF)
         {
-            dev_addr = BMI2_I2C_PRIM_ADDR;
-            bmi->intf = BMI2_I2C_INTF;
-            bmi->read = bmi2_i2c_read;
-            bmi->write = bmi2_i2c_write;
-
-            am_hal_iom_initialize(BMI270_IOM_MODULE, &iom_handle);
-            am_hal_iom_power_ctrl(iom_handle, AM_HAL_SYSCTRL_WAKE, false);
-            am_hal_iom_configure(iom_handle, &iom_i2c_config);
-            am_hal_iom_enable(iom_handle);
-
-            am_hal_gpio_pinconfig(AM_BSP_GPIO_IMU_SDA, g_AM_BSP_GPIO_IMU_SDA);
-            am_hal_gpio_pinconfig(AM_BSP_GPIO_IMU_SCL, g_AM_BSP_GPIO_IMU_SCL);
+            // not supported on the IMU Petal
         }
         else if (intf == BMI2_SPI_INTF)
         {
@@ -393,12 +382,7 @@ void bmi2_interface_deinit(struct bmi2_dev *bmi)
         /* Bus configuration : I2C */
         if (bmi->intf == BMI2_I2C_INTF)
         {
-            am_hal_gpio_pinconfig(AM_BSP_GPIO_IMU_SDA, g_AM_HAL_GPIO_DISABLE);
-            am_hal_gpio_pinconfig(AM_BSP_GPIO_IMU_SCL, g_AM_HAL_GPIO_DISABLE);
-
-            am_hal_iom_disable(iom_handle);
-            am_hal_iom_power_ctrl(iom_handle, AM_HAL_SYSCTRL_DEEPSLEEP, false);
-            am_hal_iom_uninitialize(iom_handle);
+            // not supported on the IMU Petal
         }
         else if (bmi->intf == BMI2_SPI_INTF)
         {
