@@ -65,40 +65,21 @@
 #define GYRO_RANGE      2000
 #define GYRO_RANGE_BMI2 BMI2_GYR_RANGE_RESOLVE(GYRO_RANGE)
 
-/*
- * Configure for 100Hz sampling rate
- * Clock Source: HFRC 12kHz
- * Clock Period: 1 / 12e3 = 83us
- * Sampling Period: 1 / 100 = 10.0ms
- * Sampling Clock Tick Count: 10.0ms / 83us = 120
- */
-#define SAMPLING_CLK            AM_HAL_CTIMER_HFRC_12KHZ
-#define SAMPLING_TIMER_NUM      2
-#define SAMPLING_TIMER_SEG      AM_HAL_CTIMER_TIMERA
-#define SAMPLING_TIMER_INT      AM_HAL_CTIMER_INT_TIMERA2C0
-#define SAMPLING_PERIOD_TICK    (120)
+static float imu_half_scale;
+static float k_acc, kd_gyr, kr_gyr, k_mag;
 
-static SemaphoreHandle_t imu_context_mutex;
-static imu_context_t imu_context;
-static uint32_t imu_context_count;
 static struct bmi2_dev bmi270_handle;
-static uint32_t imu_sampling_force_on;
 
 static int8_t imu_feature_config_accel(struct bmi2_dev *dev);
 static int8_t imu_feature_config_gyro(struct bmi2_dev *dev);
 static int8_t imu_feature_config_no_motion(struct bmi2_dev *dev);
 static int8_t imu_interrupt_config(struct bmi2_dev *dev);
-static void imu_setup_sensor(struct bmi2_dev *bmi);
-static void imu_setup_sampling(void);
-static void imu_sample(struct bmi2_dev *bmi);
-
-static float imu_half_scale, k_acc, kd_gyr, kr_gyr, k_mag;
 
 /*!
  * @brief This function converts lsb to meter per second squared for 16 bit accelerometer at
  * range 2G, 4G, 8G or 16G.
  */
-float lsb_to_mps2(int16_t val)
+float imu_lsb_to_mps2(int16_t val)
 {
     return k_acc * val;
 }
@@ -107,33 +88,14 @@ float lsb_to_mps2(int16_t val)
  * @brief This function converts lsb to degree per second for 16 bit gyro at
  * range 125, 250, 500, 1000 or 2000dps.
  */
-float lsb_to_dps(int16_t val)
+float imu_lsb_to_dps(int16_t val)
 {
     return kd_gyr * val;
 }
 
-float lsb_to_rps(int16_t val)
+float imu_lsb_to_rps(int16_t val)
 {
     return kr_gyr * val;
-}
-
-static void imu_interrupt_handler_no_motion(void)
-{
-    uint32_t state;
-    am_hal_gpio_state_read(AM_BSP_GPIO_IMU_INT1, AM_HAL_GPIO_INPUT_READ, &state);
-    if (state)
-    {
-        am_hal_ctimer_start(SAMPLING_TIMER_NUM, SAMPLING_TIMER_SEG);
-        am_hal_gpio_state_write(AM_BSP_GPIO_LED1, AM_HAL_GPIO_OUTPUT_SET);
-    }
-    else
-    {
-        if (imu_sampling_force_on != true)
-        {
-            am_hal_ctimer_stop(SAMPLING_TIMER_NUM, SAMPLING_TIMER_SEG);
-            am_hal_gpio_state_write(AM_BSP_GPIO_LED1, AM_HAL_GPIO_OUTPUT_CLEAR);
-        }
-    }
 }
 
 static int8_t imu_feature_config_accel(struct bmi2_dev *dev)
@@ -222,15 +184,17 @@ static int8_t imu_interrupt_config(struct bmi2_dev *dev)
     return status;
 }
 
-static void imu_setup_sensor(struct bmi2_dev *bmi)
+void imu_setup(struct bmi2_dev *bmi)
 {
     int8_t status;
+
+    bmi2_interface_init(bmi, BMI2_SPI_INTF);
 
     status = bmi270_init(bmi);
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
-        return;
+        goto error;
     }
 
     uint8_t regdata = BMI2_ASDA_PUPSEL_10K;
@@ -238,7 +202,7 @@ static void imu_setup_sensor(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
-        return;
+        goto error;
     }
 
     uint8_t sensors[4] = {BMI2_ACCEL, BMI2_GYRO, BMI2_NO_MOTION, BMI2_SIG_MOTION};
@@ -246,28 +210,28 @@ static void imu_setup_sensor(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
-        return;
+        goto error;
     }
 
     status = imu_feature_config_accel(bmi);
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
-        return;
+        goto error;
     }
 
     status = imu_feature_config_gyro(bmi);
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
-        return;
+        goto error;
     }
 
     status = imu_feature_config_no_motion(bmi);
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
-        return;
+        goto error;
     }
 
     struct bmi2_sens_int_config sensor_int_no_motion = {.type = BMI2_NO_MOTION,
@@ -276,49 +240,26 @@ static void imu_setup_sensor(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
-        return;
+        goto error;
     }
 
     status = imu_interrupt_config(bmi);
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
-        return;
+        goto error;
     }
 
-    memset(&imu_context, 0, sizeof(imu_context_t));
-    imu_context_count = 0;
     imu_half_scale = ((float)(1 << (bmi->resolution - 1)));
     k_acc = (float)(GRAVITY_EARTH * ACCEL_RANGE) / imu_half_scale;
     kd_gyr = (float)GYRO_RANGE / imu_half_scale;
     kr_gyr = (float)GYRO_RANGE / imu_half_scale * (float)M_PI / 180.0f;
+
+error:
+    bmi2_interface_deinit(bmi);
 }
 
-static void imu_setup_sampling()
-{
-    am_hal_ctimer_config_single(
-        SAMPLING_TIMER_NUM,
-        SAMPLING_TIMER_SEG,
-        AM_HAL_CTIMER_FN_PWM_REPEAT |
-        AM_HAL_CTIMER_INT_ENABLE |
-        SAMPLING_CLK
-    );
-
-    am_hal_ctimer_period_set(
-        SAMPLING_TIMER_NUM,
-        SAMPLING_TIMER_SEG,
-        SAMPLING_PERIOD_TICK, 1);
-
-    // FIXME
-    // am_hal_ctimer_int_register(SAMPLING_TIMER_INT, imu_sampling_handler);
-    am_hal_ctimer_int_enable(SAMPLING_TIMER_INT);
-    NVIC_EnableIRQ(CTIMER_IRQn);
-
-    imu_sampling_force_on = false;
-    am_hal_ctimer_start(SAMPLING_TIMER_NUM, SAMPLING_TIMER_SEG);
-}
-
-static void imu_sample(struct bmi2_dev *bmi)
+void imu_sample(struct bmi2_dev *bmi, imu_context_t *imu_context)
 {
     int8_t status = BMI2_OK;
     struct bmi2_sensor_data sensor_data[2];
@@ -328,9 +269,9 @@ static void imu_sample(struct bmi2_dev *bmi)
     sensor_data[1].type = BMI2_GYRO;
 
     taskENTER_CRITICAL();
-    bmi2_interface_init(&bmi270_handle, BMI2_SPI_INTF);
+    bmi2_interface_init(bmi, BMI2_SPI_INTF);
     status = bmi2_get_sensor_data(sensor_data, 2, bmi);
-    bmi2_interface_deinit(&bmi270_handle);
+    bmi2_interface_deinit(bmi);
     taskEXIT_CRITICAL();
 
     if (status != BMI2_OK)
@@ -339,53 +280,11 @@ static void imu_sample(struct bmi2_dev *bmi)
         return;
     }
 
-    // Store the sample data
-    xSemaphoreTake(imu_context_mutex, pdMS_TO_TICKS(5));
-
-    imu_context.timestamp = imu_context_count++;
-
-    imu_context.ax = sensor_data[0].sens_data.acc.x;
-    imu_context.ay = sensor_data[0].sens_data.acc.y;
-    imu_context.az = sensor_data[0].sens_data.acc.z;
-    imu_context.gx = sensor_data[1].sens_data.gyr.x;
-    imu_context.gy = sensor_data[1].sens_data.gyr.y;
-    imu_context.gz = sensor_data[1].sens_data.gyr.z;
-
-    xSemaphoreGive(imu_context_mutex);
-}
-
-void imu_context_read(imu_context_t *context)
-{
-    if (context)
-    {
-        xSemaphoreTake(imu_context_mutex, pdMS_TO_TICKS(10));
-
-        *context = imu_context;
-
-        xSemaphoreGive(imu_context_mutex);
-    }
-}
-
-void imu_sampling_mode(imu_sampling_mode_t mode)
-{
-    switch(mode)
-    {
-    case IMU_SAMPLING_MODE_AUTO:
-        imu_sampling_force_on = false;
-        am_hal_ctimer_start(SAMPLING_TIMER_NUM, SAMPLING_TIMER_SEG);
-        break;
-
-    case IMU_SAMPLING_MODE_OFF:
-        imu_sampling_force_on = false;
-        am_hal_ctimer_stop(SAMPLING_TIMER_NUM, SAMPLING_TIMER_SEG);
-        break;
-
-    case IMU_SAMPLING_MODE_ON:
-        imu_sampling_force_on = true;
-        am_hal_ctimer_start(SAMPLING_TIMER_NUM, SAMPLING_TIMER_SEG);
-        break;
-
-    default:
-        break;
-    }
+    imu_context->timestamp++;
+    imu_context->ax = sensor_data[0].sens_data.acc.x;
+    imu_context->ay = sensor_data[0].sens_data.acc.y;
+    imu_context->az = sensor_data[0].sens_data.acc.z;
+    imu_context->gx = sensor_data[1].sens_data.gyr.x;
+    imu_context->gy = sensor_data[1].sens_data.gyr.y;
+    imu_context->gz = sensor_data[1].sens_data.gyr.z;
 }

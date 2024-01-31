@@ -32,13 +32,6 @@
 #ifndef _IMU_H_
 #define _IMU_H_
 
-typedef enum imu_sampling_mode_e
-{
-    IMU_SAMPLING_MODE_AUTO,
-    IMU_SAMPLING_MODE_OFF,
-    IMU_SAMPLING_MODE_ON
-} imu_sampling_mode_t;
-
 typedef struct imu_context_s
 {
     uint32_t timestamp;
@@ -46,12 +39,11 @@ typedef struct imu_context_s
     int16_t gx, gy, gz;
 } imu_context_t;
 
-extern void imu_context_read(imu_context_t *context);
-extern void imu_sampling_mode(imu_sampling_mode_t mode);
+extern void imu_setup(struct bmi2_dev *bmi);
+extern void imu_sample(struct bmi2_dev *bmi, imu_context_t *context);
 
-extern float lsb_to_mps2(int16_t val);
-extern float lsb_to_dps(int16_t val);
-extern float lsb_to_rps(int16_t val);
-extern float lsb_to_mt(int16_t val);
+extern float imu_lsb_to_mps2(int16_t val);
+extern float imu_lsb_to_dps(int16_t val);
+extern float imu_lsb_to_rps(int16_t val);
 
 #endif
