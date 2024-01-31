@@ -3,27 +3,6 @@
         "default": "PETAL_IMU",
         "description": "BSP Selection",
         "choices": {
-            "NM180100EVB": {
-                "short": "NM180100EVB",
-                "long": "NM180100EVB",
-                "settings": {
-                    "BSP_NM180100EVB": "ON"
-                }
-            },
-            "NM180310": {
-                "short": "NM180310",
-                "long": "NM180310",
-                "settings": {
-                    "BSP_NM180310": "ON"
-                }
-            },
-            "NM180410": {
-                "short": "NM180410",
-                "long": "NM180410",
-                "settings": {
-                    "BSP_NM180410": "ON"
-                }
-            },
             "PETAL_IMU": {
                 "short": "PETAL_IMU",
                 "long": "PETAL_IMU",
