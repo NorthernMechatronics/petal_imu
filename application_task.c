@@ -45,12 +45,17 @@
 #include "ble.h"
 #endif
 
+#include "imu.h"
+#include "mag.h"
+
 #include "application_task.h"
 #include "application_task_cli.h"
 
 #define APPLICATION_DEFAULT_LORAWAN_CLASS   LORAWAN_CLASS_A
 
 static TaskHandle_t application_task_handle;
+static struct bmi2_dev bmi270_handle;
+static struct bmm350_dev bmm350_handle;
 
 static void application_setup_task()
 {
@@ -59,6 +64,7 @@ static void application_setup_task()
 
     am_hal_gpio_pinconfig(AM_BSP_GPIO_LED1, g_AM_HAL_GPIO_OUTPUT);
     am_hal_gpio_state_write(AM_BSP_GPIO_LED1, AM_HAL_GPIO_OUTPUT_CLEAR);
+
 #if defined(BSP_NM180100EVB) || defined(BSP_NM180410)
     am_hal_gpio_pinconfig(AM_BSP_GPIO_LED2, g_AM_HAL_GPIO_OUTPUT);
     am_hal_gpio_state_write(AM_BSP_GPIO_LED2, AM_HAL_GPIO_OUTPUT_CLEAR);
@@ -182,6 +188,15 @@ static void application_task(void *parameter)
 #ifdef RAT_BLE_ENABLE
     application_setup_ble();
 #endif
+
+    uint32_t value;
+    imu_status_t imu_status = imu_setup(&bmi270_handle);
+    mag_status_t mag_status = mag_setup(&bmm350_handle);
+    if (imu_status || mag_status)
+    {
+        am_hal_gpio_state_write(AM_BSP_GPIO_LED1, AM_HAL_GPIO_OUTPUT_SET);
+        xTaskNotifyWait(0, 0, &value, portMAX_DELAY);
+    }
 
     while (1)
     {
