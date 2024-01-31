@@ -170,8 +170,6 @@ static int8_t imu_interrupt_config(struct bmi2_dev *dev)
         am_hal_gpio_pinconfig(AM_BSP_GPIO_IMU_INT1, g_AM_BSP_GPIO_IMU_INT1);
         am_hal_gpio_interrupt_clear(mask_int1);
         am_hal_gpio_interrupt_enable(mask_int1);
-        // FIXME
-        // am_hal_gpio_interrupt_register(AM_BSP_GPIO_IMU_INT1, imu_interrupt_handler_no_motion);
         NVIC_EnableIRQ(GPIO_IRQn);
 
         int_cfg.pin_type = BMI2_INT1;
@@ -257,6 +255,11 @@ void imu_setup(struct bmi2_dev *bmi)
 
 error:
     bmi2_interface_deinit(bmi);
+}
+
+void imu_int1_register(struct bmi2_dev *bmi, am_hal_gpio_handler_t handler)
+{
+    am_hal_gpio_interrupt_register(AM_BSP_GPIO_IMU_INT1, handler);
 }
 
 void imu_sample(struct bmi2_dev *bmi, imu_context_t *imu_context)

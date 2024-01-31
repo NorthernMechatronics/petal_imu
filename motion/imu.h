@@ -32,6 +32,8 @@
 #ifndef _IMU_H_
 #define _IMU_H_
 
+#include <am_mcu_apollo.h>
+
 typedef struct imu_context_s
 {
     uint32_t timestamp;
@@ -41,6 +43,7 @@ typedef struct imu_context_s
 
 extern void imu_setup(struct bmi2_dev *bmi);
 extern void imu_sample(struct bmi2_dev *bmi, imu_context_t *context);
+extern void imu_int1_register(struct bmi2_dev *bmi, am_hal_gpio_handler_t handler);
 
 extern float imu_lsb_to_mps2(int16_t val);
 extern float imu_lsb_to_dps(int16_t val);
