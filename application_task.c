@@ -34,6 +34,7 @@
 
 #include <FreeRTOS.h>
 #include <task.h>
+#include <queue.h>
 
 #include "am_bsp.h"
 
@@ -48,12 +49,14 @@
 #include "imu.h"
 #include "mag.h"
 
+#include "application.h"
 #include "application_task.h"
 #include "application_task_cli.h"
 
 #define APPLICATION_DEFAULT_LORAWAN_CLASS   LORAWAN_CLASS_A
 
 static TaskHandle_t application_task_handle;
+static QueueHandle_t application_queue_handle;
 static struct bmi2_dev bmi270_handle;
 static struct bmm350_dev bmm350_handle;
 
@@ -189,23 +192,41 @@ static void application_task(void *parameter)
     application_setup_ble();
 #endif
 
-    uint32_t value;
     imu_status_t imu_status = imu_setup(&bmi270_handle);
     mag_status_t mag_status = mag_setup(&bmm350_handle);
     if (imu_status || mag_status)
     {
         am_hal_gpio_state_write(AM_BSP_GPIO_LED1, AM_HAL_GPIO_OUTPUT_SET);
-        xTaskNotifyWait(0, 0, &value, portMAX_DELAY);
+        am_util_stdio_printf("\r\nSensor initialization failed.\r\n");
+        vTaskSuspend(application_task_handle);
     }
 
     while (1)
     {
-        vTaskDelay(pdMS_TO_TICKS(500));
-        am_hal_gpio_state_write(AM_BSP_GPIO_LED0, AM_HAL_GPIO_OUTPUT_TOGGLE);
+        application_msg_t message;
+        if (xQueueReceive(application_queue_handle, &message, portMAX_DELAY) == pdTRUE)
+        {
+
+        }
+    }
+}
+
+void application_send_message(application_msg_t *message)
+{
+    if (xPortIsInsideInterrupt() == pdTRUE)
+    {
+        BaseType_t context_switch = pdFALSE;
+        xQueueSendFromISR(application_queue_handle, message, &context_switch);
+        portYIELD_FROM_ISR(context_switch);
+    }
+    else
+    {
+        xQueueSend(application_queue_handle, message, portMAX_DELAY);
     }
 }
 
 void application_task_create(uint32_t priority)
 {
     xTaskCreate(application_task, "application", 512, 0, priority, &application_task_handle);
+    application_queue_handle = xQueueCreate(10, sizeof(application_msg_t));
 }
