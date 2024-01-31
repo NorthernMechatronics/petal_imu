@@ -10,6 +10,8 @@ set(BSP_PINS_C ${BSP_PINS_DIR}/am_bsp_pins.c)
 set(BSP_INCLUDES
     ${CMAKE_CURRENT_LIST_DIR}
     ${CMAKE_CURRENT_LIST_DIR}/${BSP_TARGET_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/drivers/bmi270
+    ${CMAKE_CURRENT_LIST_DIR}/drivers/bmm350
     CACHE PATH "BSP includes"
 )
 
@@ -38,8 +40,6 @@ target_include_directories(
     ${HAL_INCLUDES}
     ${BSP_INCLUDES}
     ${BSP_PINS_DIR}
-    drivers/bmi270
-    drivers/bmm350
 )
 
 target_sources(
