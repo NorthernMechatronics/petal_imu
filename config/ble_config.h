@@ -39,6 +39,7 @@
 
 #define WSF_NVM_NUM_OF_PAGES    2
 #define WSF_NVM_PAGE_SIZE       AM_HAL_FLASH_PAGE_SIZE
+// LoRaWAN stack uses the last two sectors
 #define WSF_NVM_START_ADDR      (AM_HAL_FLASH_INSTANCE_SIZE - ((WSF_NVM_NUM_OF_PAGES + 2) * AM_HAL_FLASH_PAGE_SIZE))
 
 #endif
