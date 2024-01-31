@@ -43,8 +43,6 @@
 #include <task.h>
 
 #include <am_bsp.h>
-#include <bmi270.h>
-#include <bmi270_hal.h>
 
 #include "imu.h"
 

@@ -32,6 +32,10 @@
 #ifndef _MAG_H_
 #define _MAG_H_
 
+#include <math.h>
+#include <bmm350.h>
+#include <bmm350_hal.h>
+
 typedef enum mag_status_e
 {
     MAG_STATUS_OK,

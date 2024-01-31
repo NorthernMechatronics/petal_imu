@@ -33,6 +33,8 @@
 #define _IMU_H_
 
 #include <am_mcu_apollo.h>
+#include <bmi270.h>
+#include <bmi270_hal.h>
 
 typedef enum imu_status_e
 {

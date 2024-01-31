@@ -42,9 +42,6 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
-#include <bmm350.h>
-#include <bmm350_hal.h>
-
 #include "mag.h"
 
 mag_status_t mag_setup(struct bmm350_dev *bmm)
