@@ -52,6 +52,7 @@
 
 #include "application_task.h"
 #include "console_task.h"
+#include "button_task.h"
 
 //*****************************************************************************
 //
@@ -168,13 +169,14 @@ void system_setup(void)
 void system_start(void)
 {
 #ifdef RAT_LORAWAN_ENABLE
-    lorawan_task_create(2);
+    lorawan_task_create(4);
 #endif
 
 #ifdef RAT_BLE_ENABLE
-    ble_task_create(2);
+    ble_task_create(4);
 #endif
 
+    button_task_create(3);
     console_task_create(2, CONSOLE_OUTPUT_UART);
     application_task_create(1);
 

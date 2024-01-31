@@ -192,6 +192,7 @@ target_sources(
     application_task_cli.c
     application_task.c
     console_task.c
+    button_task.c
 
     motion/imu.c
     motion/mag.c

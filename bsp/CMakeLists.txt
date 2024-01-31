@@ -12,6 +12,7 @@ set(BSP_INCLUDES
     ${CMAKE_CURRENT_LIST_DIR}/${BSP_TARGET_DIR}
     ${CMAKE_CURRENT_LIST_DIR}/drivers/bmi270
     ${CMAKE_CURRENT_LIST_DIR}/drivers/bmm350
+    ${CMAKE_CURRENT_LIST_DIR}/drivers/button
     CACHE PATH "BSP includes"
 )
 
@@ -56,4 +57,5 @@ target_sources(
     drivers/bmm350/bmm350.c
     drivers/bmm350/bmm350_oor.c
     drivers/bmm350/bmm350_hal.c
+    drivers/button/device_button.c
 )

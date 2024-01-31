@@ -1,7 +1,7 @@
 /*
- *  BSD 3-Clause License
+ * BSD 3-Clause License
  *
- * Copyright (c) 2024, Northern Mechatronics, Inc.
+ * Copyright (c) 2022, Northern Mechatronics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,24 +29,51 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include <stdint.h>
 
-#ifndef _APPLICATION_H_
-#define _APPLICATION_H_
+#include <am_mcu_apollo.h>
+#include <am_bsp.h>
 
-enum
+#include "device_button.h"
+
+void device_button_initialize()
 {
-    APP_LED_STATUS,
-    APP_SAMPLE_SENSOR,
-    APP_BUTTON_PRESSED,
-};
+    am_hal_gpio_pinconfig(AM_BSP_GPIO_BUTTON0, g_AM_BSP_GPIO_BUTTON0);
 
-typedef struct application_msg_s
+    am_hal_gpio_interrupt_clear(AM_HAL_GPIO_BIT(AM_BSP_GPIO_BUTTON0));
+    am_hal_gpio_interrupt_enable(AM_HAL_GPIO_BIT(AM_BSP_GPIO_BUTTON0));
+}
+
+void device_button_uninitialize()
 {
-    uint32_t message;
-    uint32_t size;
-    void *payload;
-} application_msg_t;
+    am_hal_gpio_interrupt_disable(AM_HAL_GPIO_BIT(AM_BSP_GPIO_BUTTON0));
+    am_hal_gpio_interrupt_clear(AM_HAL_GPIO_BIT(AM_BSP_GPIO_BUTTON0));
 
-extern void application_send_message(application_msg_t *message);
+    am_hal_gpio_pinconfig(AM_BSP_GPIO_BUTTON0, g_AM_HAL_GPIO_DISABLE);
+}
 
-#endif
+void device_button_interrupt_disable()
+{
+    am_hal_gpio_interrupt_disable(AM_HAL_GPIO_BIT(AM_BSP_GPIO_BUTTON0));
+    am_hal_gpio_interrupt_clear(AM_HAL_GPIO_BIT(AM_BSP_GPIO_BUTTON0));
+}
+
+void device_button_interrupt_enable()
+{
+    am_hal_gpio_interrupt_clear(AM_HAL_GPIO_BIT(AM_BSP_GPIO_BUTTON0));
+    am_hal_gpio_interrupt_enable(AM_HAL_GPIO_BIT(AM_BSP_GPIO_BUTTON0));
+}
+
+void device_button_interrupt_register(am_hal_gpio_handler_t pfnHandler)
+{
+    am_hal_gpio_interrupt_register(AM_BSP_GPIO_BUTTON0, pfnHandler);
+}
+
+button_state_e device_button_read_state()
+{
+    uint32_t state;
+
+    am_hal_gpio_state_read(AM_BSP_GPIO_BUTTON0, AM_HAL_GPIO_INPUT_READ, &state);
+
+    return (state == 0) ? BUTTON_PRESSED : BUTTON_UNPRESSED;
+}

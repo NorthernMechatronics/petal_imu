@@ -1,7 +1,7 @@
 /*
- *  BSD 3-Clause License
+ * BSD 3-Clause License
  *
- * Copyright (c) 2024, Northern Mechatronics, Inc.
+ * Copyright (c) 2022, Northern Mechatronics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,24 +29,22 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef _DEVICE_BUTTON_H_
+#define _DEVICE_BUTTON_H_
 
-#ifndef _APPLICATION_H_
-#define _APPLICATION_H_
+#include <am_mcu_apollo.h>
 
-enum
+typedef enum
 {
-    APP_LED_STATUS,
-    APP_SAMPLE_SENSOR,
-    APP_BUTTON_PRESSED,
-};
+    BUTTON_UNPRESSED = 0,
+    BUTTON_PRESSED
+} button_state_e;
 
-typedef struct application_msg_s
-{
-    uint32_t message;
-    uint32_t size;
-    void *payload;
-} application_msg_t;
+void device_button_initialize();
+void device_button_uninitialize();
+void device_button_interrupt_disable();
+void device_button_interrupt_enable();
+void device_button_interrupt_register(am_hal_gpio_handler_t pfnHandler);
+button_state_e device_button_read_state();
 
-extern void application_send_message(application_msg_t *message);
-
-#endif
+#endif /* _DEVICE_BUTTON_H_ */

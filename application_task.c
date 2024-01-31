@@ -33,8 +33,9 @@
 #include <am_util.h>
 
 #include <FreeRTOS.h>
-#include <task.h>
 #include <queue.h>
+#include <task.h>
+#include <timers.h>
 
 #include "am_bsp.h"
 
@@ -49,16 +50,44 @@
 #include "imu.h"
 #include "mag.h"
 
+#include "button.h"
+
 #include "application.h"
 #include "application_task.h"
 #include "application_task_cli.h"
 
 #define APPLICATION_DEFAULT_LORAWAN_CLASS   LORAWAN_CLASS_A
+#define LED_BLINK_NORMAL    1000
+#define LED_BLINK_QUICK      100
+
+static uint32_t led_blink_period_ms;
 
 static TaskHandle_t application_task_handle;
 static QueueHandle_t application_queue_handle;
+static TimerHandle_t application_timer_handle;
+
 static struct bmi2_dev bmi270_handle;
 static struct bmm350_dev bmm350_handle;
+
+static void application_led_timer_callback(TimerHandle_t timer)
+{
+    application_msg_t message = { .message = APP_LED_STATUS, .size = 0, .payload = NULL };
+    application_send_message(&message);
+}
+
+static void application_calibration_state_toggle()
+{
+    if (led_blink_period_ms == LED_BLINK_NORMAL)
+    {
+        led_blink_period_ms = LED_BLINK_QUICK;
+    }
+    else
+    {
+        led_blink_period_ms = LED_BLINK_NORMAL;
+    }
+
+    xTimerChangePeriod(application_timer_handle, pdMS_TO_TICKS(led_blink_period_ms), portMAX_DELAY);
+}
 
 static void application_setup_task()
 {
@@ -83,6 +112,9 @@ static void application_setup_task()
     am_hal_gpio_pinconfig(AM_BSP_GPIO_IO_EN, g_AM_HAL_GPIO_OUTPUT);
     am_hal_gpio_state_write(AM_BSP_GPIO_IO_EN, AM_HAL_GPIO_OUTPUT_SET);
 #endif
+
+    button_sequence_register(1, 0B0, application_calibration_state_toggle);
+    xTimerStart(application_timer_handle, portMAX_DELAY);
 }
 
 #ifdef RAT_LORAWAN_ENABLE
@@ -183,7 +215,6 @@ static void application_task(void *parameter)
 {
     application_task_cli_register();
 
-    application_setup_task();
 #ifdef RAT_LORAWAN_ENABLE
     application_setup_lorawan();
 #endif
@@ -201,12 +232,18 @@ static void application_task(void *parameter)
         vTaskSuspend(application_task_handle);
     }
 
+    application_setup_task();
     while (1)
     {
         application_msg_t message;
         if (xQueueReceive(application_queue_handle, &message, portMAX_DELAY) == pdTRUE)
         {
-
+            switch(message.message)
+            {
+            case APP_LED_STATUS:
+                am_hal_gpio_state_write(AM_BSP_GPIO_LED0, AM_HAL_GPIO_OUTPUT_TOGGLE);
+                break;
+            }
         }
     }
 }
@@ -227,6 +264,8 @@ void application_send_message(application_msg_t *message)
 
 void application_task_create(uint32_t priority)
 {
+    led_blink_period_ms = LED_BLINK_NORMAL;
     xTaskCreate(application_task, "application", 512, 0, priority, &application_task_handle);
     application_queue_handle = xQueueCreate(10, sizeof(application_msg_t));
+    application_timer_handle = xTimerCreate("LED Status", pdMS_TO_TICKS(led_blink_period_ms), pdTRUE, NULL, application_led_timer_callback);
 }

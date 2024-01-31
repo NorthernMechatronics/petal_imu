@@ -1,7 +1,7 @@
 /*
- *  BSD 3-Clause License
+ * BSD 3-Clause License
  *
- * Copyright (c) 2024, Northern Mechatronics, Inc.
+ * Copyright (c) 2022, Northern Mechatronics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,24 +29,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef _BUTTON_H_
+#define _BUTTON_H_
 
-#ifndef _APPLICATION_H_
-#define _APPLICATION_H_
+typedef void (*sequence_callback_t)(void);
 
-enum
-{
-    APP_LED_STATUS,
-    APP_SAMPLE_SENSOR,
-    APP_BUTTON_PRESSED,
-};
-
-typedef struct application_msg_s
-{
-    uint32_t message;
-    uint32_t size;
-    void *payload;
-} application_msg_t;
-
-extern void application_send_message(application_msg_t *message);
+void button_sequence_register(uint8_t size, uint32_t value, sequence_callback_t cb);
+void button_sequence_unregister(uint8_t size, uint32_t value, sequence_callback_t cb);
 
 #endif
