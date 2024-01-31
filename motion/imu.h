@@ -34,6 +34,12 @@
 
 #include <am_mcu_apollo.h>
 
+typedef enum imu_status_e
+{
+    IMU_STATUS_OK,
+    IMU_STATUS_ERROR
+} imu_status_t;
+
 typedef struct imu_context_s
 {
     uint32_t timestamp;
@@ -41,7 +47,7 @@ typedef struct imu_context_s
     int16_t gx, gy, gz;
 } imu_context_t;
 
-extern void imu_setup(struct bmi2_dev *bmi);
+extern imu_status_t imu_setup(struct bmi2_dev *bmi);
 extern void imu_sample(struct bmi2_dev *bmi, imu_context_t *context);
 extern void imu_int1_register(struct bmi2_dev *bmi, am_hal_gpio_handler_t handler);
 

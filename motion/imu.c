@@ -182,8 +182,9 @@ static int8_t imu_interrupt_config(struct bmi2_dev *dev)
     return status;
 }
 
-void imu_setup(struct bmi2_dev *bmi)
+imu_status_t imu_setup(struct bmi2_dev *bmi)
 {
+    imu_status_t res = IMU_STATUS_OK;
     int8_t status;
 
     bmi2_interface_init(bmi, BMI2_SPI_INTF);
@@ -192,6 +193,7 @@ void imu_setup(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
+        res = IMU_STATUS_ERROR;
         goto error;
     }
 
@@ -200,6 +202,7 @@ void imu_setup(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
+        res = IMU_STATUS_ERROR;
         goto error;
     }
 
@@ -208,6 +211,7 @@ void imu_setup(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
+        res = IMU_STATUS_ERROR;
         goto error;
     }
 
@@ -215,6 +219,7 @@ void imu_setup(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
+        res = IMU_STATUS_ERROR;
         goto error;
     }
 
@@ -222,6 +227,7 @@ void imu_setup(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
+        res = IMU_STATUS_ERROR;
         goto error;
     }
 
@@ -229,6 +235,7 @@ void imu_setup(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
+        res = IMU_STATUS_ERROR;
         goto error;
     }
 
@@ -238,6 +245,7 @@ void imu_setup(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
+        res = IMU_STATUS_ERROR;
         goto error;
     }
 
@@ -245,6 +253,7 @@ void imu_setup(struct bmi2_dev *bmi)
     if (status != BMI2_OK)
     {
         bmi2_error_codes_print_result(status);
+        res = IMU_STATUS_ERROR;
         goto error;
     }
 
@@ -255,6 +264,8 @@ void imu_setup(struct bmi2_dev *bmi)
 
 error:
     bmi2_interface_deinit(bmi);
+
+    return res;
 }
 
 void imu_int1_register(struct bmi2_dev *bmi, am_hal_gpio_handler_t handler)
