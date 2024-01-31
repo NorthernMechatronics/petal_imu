@@ -174,10 +174,10 @@ target_include_directories(
     ${BLE_INCLUDES}
     ${LORAWAN_INCLUDES}
     ${TF_INCLUDES}
-    ${PROJECT_SOURCE_DIR}/bsp
-    ${PROJECT_SOURCE_DIR}/bsp/${BSP_TARGET_DIR}
+    ${BSP_INCLUDES}
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/config
+    ${PROJECT_SOURCE_DIR}/motion
     ${PROJECT_SOURCE_DIR}/utils/bootloader
     ${PROJECT_SOURCE_DIR}/utils/RTT/Config
     ${PROJECT_SOURCE_DIR}/utils/RTT/RTT
@@ -192,6 +192,8 @@ target_sources(
     application_task_cli.c
     application_task.c
     console_task.c
+
+    motion/imu.c
 
     utils/bootloader/am_bootloader.c
     utils/bootloader/am_multi_boot.c
