@@ -194,6 +194,7 @@ target_sources(
     console_task.c
 
     motion/imu.c
+    motion/mag.c
 
     utils/bootloader/am_bootloader.c
     utils/bootloader/am_multi_boot.c
