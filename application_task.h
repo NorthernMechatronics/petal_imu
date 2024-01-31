@@ -34,4 +34,8 @@
 
 extern void application_task_create(uint32_t priority);
 
+#ifdef RAT_LORAWAN_ENABLE
+extern void application_setup_lorawan();
+#endif
+
 #endif

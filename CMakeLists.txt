@@ -191,6 +191,7 @@ target_sources(
     stub.c
     application_task_cli.c
     application_task.c
+    application_lorawan.c
     console_task.c
     button_task.c
 

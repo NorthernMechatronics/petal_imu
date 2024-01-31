@@ -37,7 +37,6 @@ enum
 {
     APP_LED_STATUS,
     APP_SAMPLE_SENSOR,
-    APP_BUTTON_PRESSED,
 };
 
 typedef struct application_msg_s
