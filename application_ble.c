@@ -1,7 +1,7 @@
 /*
- * BSD 3-Clause License
+ *  BSD 3-Clause License
  *
- * Copyright (c) 2022, Northern Mechatronics, Inc.
+ * Copyright (c) 2024, Northern Mechatronics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,17 +29,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _APPLICATION_TASK_H_
-#define _APPLICATION_TASK_H_
+#include <am_mcu_apollo.h>
+#include <am_util.h>
 
-extern void application_task_create(uint32_t priority);
+#if defined(RAT_BLE_ENABLE)
 
-#ifdef RAT_LORAWAN_ENABLE
-extern void application_setup_lorawan();
-#endif
+#include "ble.h"
 
-#ifdef RAT_BLE_ENABLE
-extern void application_setup_ble();
-#endif
+void application_setup_ble()
+{
+    ble_tracing_set(1);
+
+    ble_stack_state_set(BLE_STACK_STARTED);
+}
 
 #endif

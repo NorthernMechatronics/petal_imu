@@ -116,17 +116,6 @@ static void application_setup_task()
     xTimerStart(application_timer_handle, portMAX_DELAY);
 }
 
-#ifdef RAT_BLE_ENABLE
-
-static void application_setup_ble()
-{
-    ble_tracing_set(1);
-
-    ble_stack_state_set(BLE_STACK_STARTED);
-}
-
-#endif
-
 static void application_task(void *parameter)
 {
     application_task_cli_register();

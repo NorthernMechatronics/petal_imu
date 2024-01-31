@@ -32,12 +32,9 @@
 #include <am_mcu_apollo.h>
 #include <am_util.h>
 
-#include <FreeRTOS.h>
-#include <queue.h>
-#include <task.h>
-#include <timers.h>
-
 #include "am_bsp.h"
+
+#if defined(RAT_LORAWAN_ENABLE)
 
 #include "lorawan.h"
 #include "application.h"
@@ -122,3 +119,5 @@ void application_setup_lorawan()
         lorawan_class_set(APPLICATION_DEFAULT_LORAWAN_CLASS);
     }
 }
+
+#endif
