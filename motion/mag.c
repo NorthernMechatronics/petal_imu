@@ -40,14 +40,12 @@
 #include <am_util.h>
 
 #include <FreeRTOS.h>
-#include <semphr.h>
 #include <task.h>
 
 #include <bmm350.h>
 #include <bmm350_hal.h>
 
 #include "mag.h"
-#include "mag_task.h"
 
 mag_status_t mag_setup(struct bmm350_dev *bmm)
 {
@@ -93,7 +91,9 @@ error:
 
 void mag_sample(struct bmm350_dev *bmm, mag_context_t *context)
 {
+    int8_t rslt;
     struct bmm350_mag_temp_data mag_temp_data;
+
     taskENTER_CRITICAL();
     bmm350_interface_init(bmm);
     rslt = bmm350_get_compensated_mag_xyz_temp_data(&mag_temp_data, bmm);
@@ -106,20 +106,8 @@ void mag_sample(struct bmm350_dev *bmm, mag_context_t *context)
         return;
     }
 
-    mag_context->timestamp++;
-    mag_context->mx = mag_temp_data.x;
-    mag_context->my = mag_temp_data.y;
-    mag_context->mz = mag_temp_data.z;
-}
-
-void mag_context_read(mag_context_t *context)
-{
-    if (context)
-    {
-        xSemaphoreTake(mag_context_mutex, pdMS_TO_TICKS(10));
-
-        *context = mag_context;
-
-        xSemaphoreGive(mag_context_mutex);
-    }
+    context->timestamp++;
+    context->mx = mag_temp_data.x;
+    context->my = mag_temp_data.y;
+    context->mz = mag_temp_data.z;
 }

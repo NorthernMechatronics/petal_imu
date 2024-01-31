@@ -41,7 +41,7 @@ typedef enum mag_status_e
 typedef struct mag_context_s
 {
     uint32_t timestamp;
-    float32_t mx, my, mz;
+    float_t mx, my, mz;
 } mag_context_t;
 
 extern mag_status_t mag_setup(struct bmm350_dev *bmm);

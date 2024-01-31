@@ -40,7 +40,6 @@
 #include <am_util.h>
 
 #include <FreeRTOS.h>
-#include <semphr.h>
 #include <task.h>
 
 #include <am_bsp.h>
