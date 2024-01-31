@@ -65,8 +65,8 @@ static TaskHandle_t application_task_handle;
 static QueueHandle_t application_queue_handle;
 static TimerHandle_t application_timer_handle;
 
-static struct bmi2_dev bmi270_handle;
-static struct bmm350_dev bmm350_handle;
+static imu_context_t imu_context;
+static mag_context_t mag_context;
 
 static void application_led_timer_callback(TimerHandle_t timer)
 {
@@ -128,15 +128,7 @@ static void application_task(void *parameter)
     application_setup_ble();
 #endif
 
-    imu_status_t imu_status = imu_setup(&bmi270_handle);
-    mag_status_t mag_status = mag_setup(&bmm350_handle);
-    if (imu_status || mag_status)
-    {
-        am_hal_gpio_state_write(AM_BSP_GPIO_LED1, AM_HAL_GPIO_OUTPUT_SET);
-        am_util_stdio_printf("\r\nSensor initialization failed.\r\n");
-        vTaskSuspend(application_task_handle);
-    }
-
+    application_setup_sensors(100);
     application_setup_task();
     while (1)
     {
@@ -150,6 +142,8 @@ static void application_task(void *parameter)
                 break;
 
             case APP_SAMPLE_SENSOR:
+                application_sensors_read(&imu_context, &mag_context);
+                am_util_stdio_printf("%6d %6d %6d\r", imu_context.ax, imu_context.ay, imu_context.az);
                 break;
             }
         }

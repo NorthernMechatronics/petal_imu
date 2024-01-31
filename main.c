@@ -155,6 +155,7 @@ void system_setup(void)
     am_hal_rtc_osc_disable();
 
     NVIC_SetPriority(GPIO_IRQn, NVIC_configKERNEL_INTERRUPT_PRIORITY);
+    NVIC_SetPriority(CTIMER_IRQn, NVIC_configKERNEL_INTERRUPT_PRIORITY);
     NVIC_SetPriority(STIMER_CMPR2_IRQn, NVIC_configKERNEL_INTERRUPT_PRIORITY);
     NVIC_SetPriority(STIMER_CMPR3_IRQn, NVIC_configKERNEL_INTERRUPT_PRIORITY);
     NVIC_SetPriority(STIMER_CMPR4_IRQn, NVIC_configKERNEL_INTERRUPT_PRIORITY);

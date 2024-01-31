@@ -193,6 +193,7 @@ target_sources(
     application_task.c
     application_ble.c
     application_lorawan.c
+    application_sensors.c
     console_task.c
     button_task.c
 
