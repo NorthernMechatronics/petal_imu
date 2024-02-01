@@ -241,7 +241,7 @@ static void application_task(void *parameter)
                 {
                     application_sensors_read(&imu_context, &mag_context, &mag_cal);
                     // For each algorithm:
-                        // Step 1: Re-map axis as required by the algorithm.  Aerospace
+                        // Step 1: Re-map axes as required by the algorithm.  Aerospace
                         //   coordinates are usually in NED (North East Down) whereas
                         //   targeting and tracking usually use ENU (East North Up).
                         //   along the IMU Petal Board width: -imu_x, +mag_y
