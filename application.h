@@ -36,7 +36,9 @@
 enum
 {
     APP_LED_STATUS,
-    APP_SAMPLE_SENSOR,
+    APP_SAMPLING_START,
+    APP_SAMPLING_STOP,
+    APP_SAMPLING_TRIGGER,
 };
 
 typedef struct application_msg_s

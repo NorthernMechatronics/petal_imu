@@ -56,7 +56,7 @@
 #include "application_task.h"
 #include "application_task_cli.h"
 
-#define LED_BLINK_NORMAL    1000
+#define LED_BLINK_NORMAL    500
 #define LED_BLINK_QUICK      100
 
 static uint32_t led_blink_period_ms;
@@ -67,6 +67,7 @@ static TimerHandle_t application_timer_handle;
 
 static imu_context_t imu_context;
 static mag_context_t mag_context;
+static mag_cal_t mag_cal;
 
 static void application_led_timer_callback(TimerHandle_t timer)
 {
@@ -128,8 +129,12 @@ static void application_task(void *parameter)
     application_setup_ble();
 #endif
 
-    application_setup_sensors(100);
     application_setup_task();
+
+    // Set sampling rate to 100Hz
+    // Period is 1 / 100Hz = 10ms
+    application_setup_sensors(10);
+    application_sensors_start();
     while (1)
     {
         application_msg_t message;
@@ -141,9 +146,18 @@ static void application_task(void *parameter)
                 am_hal_gpio_state_write(AM_BSP_GPIO_LED0, AM_HAL_GPIO_OUTPUT_TOGGLE);
                 break;
 
-            case APP_SAMPLE_SENSOR:
+            case APP_SAMPLING_TRIGGER:
                 application_sensors_read(&imu_context, &mag_context);
-                am_util_stdio_printf("%6d %6d %6d\r", imu_context.ax, imu_context.ay, imu_context.az);
+                break;
+
+            case APP_SAMPLING_START:
+                application_sensors_start();
+                am_util_stdio_printf("Motion detected.  Sampling...\r\n");
+                break;
+
+            case APP_SAMPLING_STOP:
+                application_sensors_stop();
+                am_util_stdio_printf("No motion detected.  Sampling Paused...\r\n");
                 break;
             }
         }

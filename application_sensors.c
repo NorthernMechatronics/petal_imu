@@ -66,9 +66,31 @@ static void sensor_sample_trigger(void)
 {
     // To avoid potential bus contention, we perform the sensor data read in the
     // application task as we need to access the SPI and I2C bus.
-    application_msg_t message = { .message = APP_SAMPLE_SENSOR, .size = 0, .payload = NULL };
+    application_msg_t message = { .message = APP_SAMPLING_TRIGGER, .size = 0, .payload = NULL };
     application_send_message(&message);
 }
+
+static void sensor_int1_handler()
+{
+    uint32_t state;
+    application_msg_t message = { 0 };
+
+    // The IMU is configured to generate an interrupt when there is no motion.
+    // We stop sampling when there is no motion and resume when motion is detected.
+    // 
+    // See imu.c for configuration details.
+    am_hal_gpio_state_read(AM_BSP_GPIO_IMU_INT1, AM_HAL_GPIO_INPUT_READ, &state);
+    if (state)
+    {
+        message.message = APP_SAMPLING_START;
+    }
+    else
+    {
+        message.message = APP_SAMPLING_STOP;
+    }
+    application_send_message(&message);
+}
+
 
 static void application_setup_sensors_sampling_clock(uint32_t sampling_period_ms)
 {
@@ -90,8 +112,6 @@ static void application_setup_sensors_sampling_clock(uint32_t sampling_period_ms
     am_hal_ctimer_int_register(SAMPLING_TIMER_INT, sensor_sample_trigger);
     am_hal_ctimer_int_enable(SAMPLING_TIMER_INT);
     NVIC_EnableIRQ(CTIMER_IRQn);
-
-    am_hal_ctimer_start(SAMPLING_TIMER_NUM, SAMPLING_TIMER_SEG);
 }
 
 void application_setup_sensors(uint32_t sampling_period_ms)
@@ -104,6 +124,7 @@ void application_setup_sensors(uint32_t sampling_period_ms)
         vTaskSuspend(xTaskGetCurrentTaskHandle());
     }
 
+    imu_int1_register(&bmi270_handle, sensor_int1_handler);
     application_setup_sensors_sampling_clock(sampling_period_ms);
 }
 
@@ -111,4 +132,14 @@ void application_sensors_read(imu_context_t *imu_context, mag_context_t *mag_con
 {
     imu_sample(&bmi270_handle, imu_context);
     mag_sample(&bmm350_handle, mag_context);
+}
+
+void application_sensors_start()
+{
+    am_hal_ctimer_start(SAMPLING_TIMER_NUM, SAMPLING_TIMER_SEG);
+}
+
+void application_sensors_stop()
+{
+    am_hal_ctimer_stop(SAMPLING_TIMER_NUM, SAMPLING_TIMER_SEG);
 }

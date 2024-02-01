@@ -48,6 +48,12 @@ typedef struct mag_context_s
     float_t mx, my, mz;
 } mag_context_t;
 
+typedef struct mag_cal_s
+{
+    uint32_t initialised;
+    float_t ox, oy, oz;
+} mag_cal_t;
+
 extern mag_status_t mag_setup(struct bmm350_dev *bmm);
 extern void mag_sample(struct bmm350_dev *bmm, mag_context_t *context);
 

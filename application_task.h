@@ -38,6 +38,13 @@
 extern void application_task_create(uint32_t priority);
 extern void application_setup_sensors(uint32_t sampling_period_ms);
 extern void application_sensors_read(imu_context_t *imu_context, mag_context_t *mag_context);
+extern void application_sensors_start(void);
+extern void application_sensors_stop(void);
+
+extern void application_lfs_init(void);
+extern void application_lfs_deinit(void);
+extern void application_lfs_load_cal(mag_cal_t *cal_data);
+extern void application_lfs_write_cal(mag_cal_t *cal_data);
 
 #ifdef RAT_LORAWAN_ENABLE
 extern void application_setup_lorawan();
