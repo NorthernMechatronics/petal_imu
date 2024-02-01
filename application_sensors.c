@@ -66,7 +66,7 @@ static void sensor_sample_trigger(void)
 {
     // To avoid potential bus contention, we perform the sensor data read in the
     // application task as we need to access the SPI and I2C bus.
-    application_msg_t message = { .message = APP_SAMPLING_TRIGGER, .size = 0, .payload = NULL };
+    application_msg_t message = { .message = APP_MSG_SAMPLING_TRIGGER, .size = 0, .payload = NULL };
     application_send_message(&message);
 }
 
@@ -82,11 +82,11 @@ static void sensor_int1_handler()
     am_hal_gpio_state_read(AM_BSP_GPIO_IMU_INT1, AM_HAL_GPIO_INPUT_READ, &state);
     if (state)
     {
-        message.message = APP_SAMPLING_START;
+        message.message = APP_MSG_SAMPLING_START;
     }
     else
     {
-        message.message = APP_SAMPLING_STOP;
+        message.message = APP_MSG_SAMPLING_STOP;
     }
     application_send_message(&message);
 }

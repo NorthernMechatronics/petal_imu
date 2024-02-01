@@ -71,7 +71,7 @@ static mag_cal_t mag_cal;
 
 static void application_led_timer_callback(TimerHandle_t timer)
 {
-    application_msg_t message = { .message = APP_LED_STATUS, .size = 0, .payload = NULL };
+    application_msg_t message = { .message = APP_MSG_LED_STATUS, .size = 0, .payload = NULL };
     application_send_message(&message);
 }
 
@@ -113,6 +113,12 @@ static void application_setup_task()
     am_hal_gpio_state_write(AM_BSP_GPIO_IO_EN, AM_HAL_GPIO_OUTPUT_SET);
 #endif
 
+    application_lfs_init();
+    application_lfs_load_cal(&mag_cal);
+    application_lfs_deinit();
+
+    am_util_stdio_printf("Calibration Data: %d\r\n", mag_cal.initialised);
+
     button_sequence_register(1, 0B0, application_calibration_state_toggle);
     xTimerStart(application_timer_handle, portMAX_DELAY);
 }
@@ -142,20 +148,20 @@ static void application_task(void *parameter)
         {
             switch(message.message)
             {
-            case APP_LED_STATUS:
+            case APP_MSG_LED_STATUS:
                 am_hal_gpio_state_write(AM_BSP_GPIO_LED0, AM_HAL_GPIO_OUTPUT_TOGGLE);
                 break;
 
-            case APP_SAMPLING_TRIGGER:
+            case APP_MSG_SAMPLING_TRIGGER:
                 application_sensors_read(&imu_context, &mag_context);
                 break;
 
-            case APP_SAMPLING_START:
+            case APP_MSG_SAMPLING_START:
                 application_sensors_start();
                 am_util_stdio_printf("Motion detected.  Sampling...\r\n");
                 break;
 
-            case APP_SAMPLING_STOP:
+            case APP_MSG_SAMPLING_STOP:
                 application_sensors_stop();
                 am_util_stdio_printf("No motion detected.  Sampling Paused...\r\n");
                 break;
