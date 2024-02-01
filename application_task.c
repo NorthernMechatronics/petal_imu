@@ -59,6 +59,13 @@
 #define LED_BLINK_NORMAL    500
 #define LED_BLINK_QUICK      100
 
+typedef enum {
+    APP_STATE_NORMAL,
+    APP_STATE_CALIBRATION
+} application_state_t;
+
+static application_state_t application_state;
+
 static uint32_t led_blink_period_ms;
 
 static TaskHandle_t application_task_handle;
@@ -75,17 +82,19 @@ static void application_led_timer_callback(TimerHandle_t timer)
     application_send_message(&message);
 }
 
-static void application_calibration_state_toggle()
+static void application_calibration_start()
 {
-    if (led_blink_period_ms == LED_BLINK_NORMAL)
-    {
-        led_blink_period_ms = LED_BLINK_QUICK;
-    }
-    else
-    {
-        led_blink_period_ms = LED_BLINK_NORMAL;
-    }
+    application_msg_t message = { .message = APP_MSG_CALIBRATE_START, .size = 0, .payload = NULL };
+    application_send_message(&message);
+    led_blink_period_ms = LED_BLINK_QUICK;
+    xTimerChangePeriod(application_timer_handle, pdMS_TO_TICKS(led_blink_period_ms), portMAX_DELAY);
+}
 
+static void application_calibration_stop()
+{
+    application_msg_t message = { .message = APP_MSG_CALIBRATE_STOP, .size = 0, .payload = NULL };
+    application_send_message(&message);
+    led_blink_period_ms = LED_BLINK_NORMAL;
     xTimerChangePeriod(application_timer_handle, pdMS_TO_TICKS(led_blink_period_ms), portMAX_DELAY);
 }
 
@@ -97,7 +106,10 @@ static void application_setup_task()
     am_hal_gpio_pinconfig(AM_BSP_GPIO_LED1, g_AM_HAL_GPIO_OUTPUT);
     am_hal_gpio_state_write(AM_BSP_GPIO_LED1, AM_HAL_GPIO_OUTPUT_CLEAR);
 
-#if defined(BSP_NM180100EVB) || defined(BSP_NM180410)
+// Uncomment if running on the Petal Development Board.
+// Note that these LEDs do not exist on the Petal Core or the
+// Petal IMU boards.
+#if defined(BSP_NM180410)
     am_hal_gpio_pinconfig(AM_BSP_GPIO_LED2, g_AM_HAL_GPIO_OUTPUT);
     am_hal_gpio_state_write(AM_BSP_GPIO_LED2, AM_HAL_GPIO_OUTPUT_CLEAR);
 
@@ -106,9 +118,7 @@ static void application_setup_task()
 
     am_hal_gpio_pinconfig(AM_BSP_GPIO_LED4, g_AM_HAL_GPIO_OUTPUT);
     am_hal_gpio_state_write(AM_BSP_GPIO_LED4, AM_HAL_GPIO_OUTPUT_CLEAR);
-#endif
 
-#if defined(BSP_NM180410)
     am_hal_gpio_pinconfig(AM_BSP_GPIO_IO_EN, g_AM_HAL_GPIO_OUTPUT);
     am_hal_gpio_state_write(AM_BSP_GPIO_IO_EN, AM_HAL_GPIO_OUTPUT_SET);
 #endif
@@ -117,10 +127,19 @@ static void application_setup_task()
     application_lfs_load_cal(&mag_cal);
     application_lfs_deinit();
 
-    am_util_stdio_printf("Calibration Data: %d\r\n", mag_cal.initialised);
+    am_util_stdio_printf("Calibration State: %d\r\n", mag_cal.initialised);
+    am_util_stdio_printf("Magnetic Offsets: %4.2f, %4.2f, %4.2f\r\n",
+        (double)mag_cal.ox,
+        (double)mag_cal.oy,
+        (double)mag_cal.oz);
 
-    button_sequence_register(1, 0B0, application_calibration_state_toggle);
+    // three short presses to start calibration
+    button_sequence_register(3, 0B000, application_calibration_start);
+    // one long press to end calibration
+    button_sequence_register(1, 0B1, application_calibration_stop);
     xTimerStart(application_timer_handle, portMAX_DELAY);
+
+    application_state = APP_STATE_NORMAL;
 }
 
 static void application_task(void *parameter)
@@ -154,6 +173,14 @@ static void application_task(void *parameter)
 
             case APP_MSG_SAMPLING_TRIGGER:
                 application_sensors_read(&imu_context, &mag_context);
+                if (application_state == APP_STATE_CALIBRATION)
+                {
+
+                }
+                else
+                {
+                    // Run your custom algorithm here.
+                }
                 break;
 
             case APP_MSG_SAMPLING_START:
@@ -162,8 +189,22 @@ static void application_task(void *parameter)
                 break;
 
             case APP_MSG_SAMPLING_STOP:
-                application_sensors_stop();
-                am_util_stdio_printf("No motion detected.  Sampling Paused...\r\n");
+                // Keep sampling if we are calibrating. 
+                if (application_state != APP_STATE_CALIBRATION)
+                {
+                    application_sensors_stop();
+                    am_util_stdio_printf("No motion detected.  Sampling paused...\r\n");
+                }
+                break;
+
+            case APP_MSG_CALIBRATE_START:
+                am_util_stdio_printf("Calibration started.  Long press to exit when done.\r\n");
+                application_state = APP_STATE_CALIBRATION;
+                break;
+
+            case APP_MSG_CALIBRATE_STOP:
+                am_util_stdio_printf("Calibration completed.\r\n");
+                application_state = APP_STATE_NORMAL;
                 break;
             }
         }
