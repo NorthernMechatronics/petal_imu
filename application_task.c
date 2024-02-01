@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <math.h>
+#include <string.h>
 
 #include <am_mcu_apollo.h>
 #include <am_util.h>
@@ -136,6 +137,17 @@ static void application_setup_task()
     application_lfs_load_cal(&mag_cal);
     application_lfs_deinit();
 
+    if (mag_cal.initialised == 0)
+    {
+        mag_cal.ox = 0.0f;
+        mag_cal.oy = 0.0f;
+        mag_cal.oz = 0.0f;
+
+        mag_cal.sx = 1.0f;
+        mag_cal.sy = 1.0f;
+        mag_cal.sz = 1.0f;
+    }
+
     am_util_stdio_printf("Calibration State: %d\r\n", mag_cal.initialised);
     am_util_stdio_printf("Hard Iron Offsets: %4.2f, %4.2f, %4.2f\r\n",
         (double)mag_cal.ox,
@@ -217,9 +229,6 @@ static void application_task(void *parameter)
                         (double)(mag_cal.mz_max - mag_cal.mz_min)
                         );
                 } 
-                else
-                {
-                }
                 break;
 
             case APP_MSG_SAMPLING_TRIGGER:
@@ -231,7 +240,18 @@ static void application_task(void *parameter)
                 else
                 {
                     application_sensors_read(&imu_context, &mag_context, &mag_cal);
-                    // Run your custom algorithms here.
+                    // For each algorithm:
+                        // Step 1: Re-map axis as required by the algorithm.  Aerospace
+                        //   coordinates are usually in NED (North East Down) whereas
+                        //   targeting and tracking usually use ENU (East North Up).
+                        //   along the IMU Petal Board width: -imu_x, +mag_y
+                        //   along the IMU Petal board height: -imu_y, +mag_x
+                        //   top: +imu_z, -mag_z
+                        //
+                        // Step 2: run algorithm
+                    //
+                    // Avoid doing serial print here as it is SLOW and could potentially
+                    // impact algorithms that are jitter sensitive.
                 }
                 break;
 
