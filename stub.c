@@ -80,3 +80,13 @@ _ssize_t _write_r(struct _reent *r, int fd, const void *ptr, size_t len)
 {
     return 0;
 }
+
+int _getpid_r(struct _reent *r)
+{
+    return 0;
+}
+
+int _kill_r(struct _reent *r, int pid, int sig)
+{
+    return 0;
+}
