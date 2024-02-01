@@ -134,12 +134,15 @@ void application_sensors_read(imu_context_t *imu_context, mag_context_t *mag_con
     mag_sample(&bmm350_handle, mag_context);
     if (mag_cal)
     {
-        mag_context->mx -= mag_cal->ox;
-        mag_context->my -= mag_cal->oy;
-        mag_context->mz -= mag_cal->oz;
-        mag_context->mx *= mag_cal->sx;
-        mag_context->my *= mag_cal->sy;
-        mag_context->mz *= mag_cal->sz;
+        if (mag_cal->initialised)
+        {
+            mag_context->mx -= mag_cal->ox;
+            mag_context->my -= mag_cal->oy;
+            mag_context->mz -= mag_cal->oz;
+            mag_context->mx *= mag_cal->sx;
+            mag_context->my *= mag_cal->sy;
+            mag_context->mz *= mag_cal->sz;
+        }
     }
 }
 
