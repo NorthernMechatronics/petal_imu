@@ -108,3 +108,54 @@ void mag_sample(struct bmm350_dev *bmm, mag_context_t *context)
     context->my = mag_temp_data.y;
     context->mz = mag_temp_data.z;
 }
+
+void mag_calibrate_step(mag_context_t *context, mag_cal_t *cal_data)
+{
+    if (context->mx > cal_data->mx_max)
+    {
+        cal_data->mx_max = context->mx;
+    }
+    if (context->my > cal_data->my_max)
+    {
+        cal_data->my_max = context->my;
+    }
+    if (context->mz > cal_data->mz_max)
+    {
+        cal_data->mz_max = context->mz;
+    }
+
+    if (context->mx < cal_data->mx_min)
+    {
+        cal_data->mx_min = context->mx;
+    }
+    if (context->my < cal_data->my_min)
+    {
+        cal_data->my_min = context->my;
+    }
+    if (context->mz < cal_data->mz_min)
+    {
+        cal_data->mz_min = context->mz;
+    }
+
+    cal_data->ox = (cal_data->mx_min + cal_data->mx_max) / 2;
+    cal_data->oy = (cal_data->my_min + cal_data->my_max) / 2;
+    cal_data->oz = (cal_data->mz_min + cal_data->mz_max) / 2;
+
+    float xrange, yrange, zrange, max_range;
+    xrange = cal_data->mx_max - cal_data->mx_min;
+    yrange = cal_data->my_max - cal_data->my_min;
+    zrange = cal_data->mz_max - cal_data->mz_min;
+    max_range = xrange;
+    if (yrange > max_range)
+    {
+        max_range = yrange;
+    }
+    if (zrange > max_range)
+    {
+        max_range = zrange;
+    }
+
+    cal_data->sx = max_range / xrange;
+    cal_data->sy = max_range / yrange;
+    cal_data->sz = max_range / zrange;
+}

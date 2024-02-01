@@ -9,7 +9,7 @@
     "cmake.configureOnOpen": false,
     "cmake.configureArgs": [
         "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/nmsdk2/targets/nm180100/build.cmake",
-        "-DRAT_LORAWAN_ENABLE=ON",
+        "-DRAT_LORAWAN_ENABLE=OFF",
         "-DRAT_BLE_ENABLE=OFF",
         "-DTF_ENABLE=OFF",
         "-DCMSIS_DSP_ENABLE=OFF"

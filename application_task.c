@@ -29,6 +29,8 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include <math.h>
+
 #include <am_mcu_apollo.h>
 #include <am_util.h>
 
@@ -67,6 +69,7 @@ typedef enum {
 static application_state_t application_state;
 
 static uint32_t led_blink_period_ms;
+static uint32_t sampling_always_on;
 
 static TaskHandle_t application_task_handle;
 static QueueHandle_t application_queue_handle;
@@ -96,6 +99,12 @@ static void application_calibration_stop()
     application_send_message(&message);
     led_blink_period_ms = LED_BLINK_NORMAL;
     xTimerChangePeriod(application_timer_handle, pdMS_TO_TICKS(led_blink_period_ms), portMAX_DELAY);
+}
+
+static void application_toggle_always_on()
+{
+    sampling_always_on ^= 1;
+    am_util_stdio_printf("Sampling Always On: %d\r\n", sampling_always_on);
 }
 
 static void application_setup_task()
@@ -128,19 +137,36 @@ static void application_setup_task()
     application_lfs_deinit();
 
     am_util_stdio_printf("Calibration State: %d\r\n", mag_cal.initialised);
-    am_util_stdio_printf("Magnetic Offsets: %4.2f, %4.2f, %4.2f\r\n",
+    am_util_stdio_printf("Hard Iron Offsets: %4.2f, %4.2f, %4.2f\r\n",
         (double)mag_cal.ox,
         (double)mag_cal.oy,
         (double)mag_cal.oz);
+
+    application_state = APP_STATE_NORMAL;
+    sampling_always_on = 0;
 
     // three short presses to start calibration
     button_sequence_register(3, 0B000, application_calibration_start);
     // one long press to end calibration
     button_sequence_register(1, 0B1, application_calibration_stop);
-    xTimerStart(application_timer_handle, portMAX_DELAY);
+    // two short presses to toggle always on
+    button_sequence_register(2, 0B00, application_toggle_always_on);
 
-    application_state = APP_STATE_NORMAL;
+    xTimerStart(application_timer_handle, portMAX_DELAY);
 }
+
+float application_sensors_heading(float x, float y)
+{
+    float heading = atan2f(y, x) * 180.0f / (float) M_PI;
+    if (heading < 0.0f)
+        heading += 360.0f;
+
+    if (heading > 360.0f)
+        heading -= 360.0f;
+
+    return heading;
+}
+
 
 static void application_task(void *parameter)
 {
@@ -169,28 +195,57 @@ static void application_task(void *parameter)
             {
             case APP_MSG_LED_STATUS:
                 am_hal_gpio_state_write(AM_BSP_GPIO_LED0, AM_HAL_GPIO_OUTPUT_TOGGLE);
+                if (application_state == APP_STATE_CALIBRATION)
+                {
+                    am_util_stdio_printf(
+                        "Offsets: %4.2f, %4.2f, %4.2f  " \
+                        "Min: %4.2f, %4.2f, %4.2f  " \
+                        "Max: %4.2f, %4.2f, %4.2f  " \
+                        "Range: %4.2f, %4.2f, %4.2f  " \
+                        "      \r",
+                        (double)mag_cal.ox,
+                        (double)mag_cal.oy,
+                        (double)mag_cal.oz,
+                        (double)mag_cal.mx_min,
+                        (double)mag_cal.my_min,
+                        (double)mag_cal.mz_min,
+                        (double)mag_cal.mx_max,
+                        (double)mag_cal.my_max,
+                        (double)mag_cal.mz_max,
+                        (double)(mag_cal.mx_max - mag_cal.mx_min),
+                        (double)(mag_cal.my_max - mag_cal.my_min),
+                        (double)(mag_cal.mz_max - mag_cal.mz_min)
+                        );
+                } 
+                else
+                {
+                }
                 break;
 
             case APP_MSG_SAMPLING_TRIGGER:
-                application_sensors_read(&imu_context, &mag_context);
                 if (application_state == APP_STATE_CALIBRATION)
                 {
-
+                    application_sensors_read(&imu_context, &mag_context, NULL);
+                    mag_calibrate_step(&mag_context, &mag_cal);
                 }
                 else
                 {
-                    // Run your custom algorithm here.
+                    application_sensors_read(&imu_context, &mag_context, &mag_cal);
+                    // Run your custom algorithms here.
                 }
                 break;
 
             case APP_MSG_SAMPLING_START:
                 application_sensors_start();
-                am_util_stdio_printf("Motion detected.  Sampling...\r\n");
+                if (sampling_always_on == 0)
+                {
+                    am_util_stdio_printf("Motion detected.  Sampling...\r\n");
+                }
                 break;
 
             case APP_MSG_SAMPLING_STOP:
                 // Keep sampling if we are calibrating. 
-                if (application_state != APP_STATE_CALIBRATION)
+                if ((application_state != APP_STATE_CALIBRATION) && (sampling_always_on == 0))
                 {
                     application_sensors_stop();
                     am_util_stdio_printf("No motion detected.  Sampling paused...\r\n");
@@ -198,13 +253,25 @@ static void application_task(void *parameter)
                 break;
 
             case APP_MSG_CALIBRATE_START:
-                am_util_stdio_printf("Calibration started.  Long press to exit when done.\r\n");
                 application_state = APP_STATE_CALIBRATION;
+                memset(&mag_cal, 0, sizeof(mag_cal_t));
+
+                am_util_stdio_printf("Calibration started.  Long press to exit when done.\r\n");
                 break;
 
             case APP_MSG_CALIBRATE_STOP:
-                am_util_stdio_printf("Calibration completed.\r\n");
+                mag_cal.initialised = 1;
+                application_lfs_init();
+                application_lfs_write_cal(&mag_cal);
+                application_lfs_deinit();
                 application_state = APP_STATE_NORMAL;
+
+                am_util_stdio_printf("Calibration completed.\r\n");
+                am_util_stdio_printf("Calibration State: %d\r\n", mag_cal.initialised);
+                am_util_stdio_printf("Hard Iron Offsets: %4.2f, %4.2f, %4.2f\r\n",
+                    (double)mag_cal.ox,
+                    (double)mag_cal.oy,
+                    (double)mag_cal.oz);
                 break;
             }
         }

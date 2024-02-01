@@ -128,10 +128,19 @@ void application_setup_sensors(uint32_t sampling_period_ms)
     application_setup_sensors_sampling_clock(sampling_period_ms);
 }
 
-void application_sensors_read(imu_context_t *imu_context, mag_context_t *mag_context)
+void application_sensors_read(imu_context_t *imu_context, mag_context_t *mag_context, mag_cal_t *mag_cal)
 {
     imu_sample(&bmi270_handle, imu_context);
     mag_sample(&bmm350_handle, mag_context);
+    if (mag_cal)
+    {
+        mag_context->mx -= mag_cal->ox;
+        mag_context->my -= mag_cal->oy;
+        mag_context->mz -= mag_cal->oz;
+        mag_context->mx *= mag_cal->sx;
+        mag_context->my *= mag_cal->sy;
+        mag_context->mz *= mag_cal->sz;
+    }
 }
 
 void application_sensors_start()

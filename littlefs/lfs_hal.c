@@ -60,7 +60,7 @@ int littlefs_hal_prog(const struct lfs_config *c, lfs_block_t block,
     uint32_t address = (page << 13) + off;
 
     am_hal_interrupt_master_disable();
-    int err = am_hal_flash_program_main(AM_HAL_FLASH_PROGRAM_KEY, buffer, (uint32_t *)address, size >> 2);
+    int err = am_hal_flash_program_main(AM_HAL_FLASH_PROGRAM_KEY, (uint32_t *)buffer, (uint32_t *)address, size >> 2);
     am_hal_interrupt_master_enable();
 
     return LFS_ERR_OK;

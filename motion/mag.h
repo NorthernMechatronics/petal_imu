@@ -52,9 +52,13 @@ typedef struct mag_cal_s
 {
     uint32_t initialised;
     float_t ox, oy, oz;
+    float_t sx, sy, sz;
+    float_t mx_max, my_max, mz_max;
+    float_t mx_min, my_min, mz_min;
 } mag_cal_t;
 
 extern mag_status_t mag_setup(struct bmm350_dev *bmm);
 extern void mag_sample(struct bmm350_dev *bmm, mag_context_t *context);
+extern void mag_calibrate_step(mag_context_t *context, mag_cal_t *cal_data);
 
 #endif
