@@ -177,6 +177,7 @@ target_include_directories(
     ${BSP_INCLUDES}
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/config
+    ${PROJECT_SOURCE_DIR}/littlefs
     ${PROJECT_SOURCE_DIR}/motion
     ${PROJECT_SOURCE_DIR}/utils/bootloader
     ${PROJECT_SOURCE_DIR}/utils/RTT/Config
@@ -196,6 +197,10 @@ target_sources(
     application_sensors.c
     console_task.c
     button_task.c
+
+    littlefs/lfs.c
+    littlefs/lfs_util.c
+    littlefs/lfs_hal.c
 
     motion/imu.c
     motion/mag.c
