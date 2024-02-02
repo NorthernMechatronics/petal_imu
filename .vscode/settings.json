@@ -12,7 +12,7 @@
         "-DRAT_LORAWAN_ENABLE=ON",
         "-DRAT_BLE_ENABLE=OFF",
         "-DTF_ENABLE=OFF",
-        "-DCMSIS_DSP_ENABLE=OFF"
+        "-DCMSIS_DSP_ENABLE=ON"
     ],
     "cmake.generator": "Unix Makefiles"
 }

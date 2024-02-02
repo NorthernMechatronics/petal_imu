@@ -176,6 +176,7 @@ target_include_directories(
     ${TF_INCLUDES}
     ${BSP_INCLUDES}
     ${PROJECT_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}/alg/shot_detect
     ${PROJECT_SOURCE_DIR}/config
     ${PROJECT_SOURCE_DIR}/littlefs
     ${PROJECT_SOURCE_DIR}/motion
@@ -198,6 +199,8 @@ target_sources(
     application_sensors.c
     application_lfs.c
     console_task.c
+
+    alg/shot_detect/alg_shotdetect.c
 
     littlefs/lfs.c
     littlefs/lfs_util.c
