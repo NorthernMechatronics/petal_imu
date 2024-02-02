@@ -179,6 +179,7 @@ target_include_directories(
     ${PROJECT_SOURCE_DIR}/config
     ${PROJECT_SOURCE_DIR}/littlefs
     ${PROJECT_SOURCE_DIR}/motion
+    ${PROJECT_SOURCE_DIR}/ui
     ${PROJECT_SOURCE_DIR}/utils/bootloader
     ${PROJECT_SOURCE_DIR}/utils/RTT/Config
     ${PROJECT_SOURCE_DIR}/utils/RTT/RTT
@@ -197,7 +198,6 @@ target_sources(
     application_sensors.c
     application_lfs.c
     console_task.c
-    button_task.c
 
     littlefs/lfs.c
     littlefs/lfs_util.c
@@ -205,6 +205,8 @@ target_sources(
 
     motion/imu.c
     motion/mag.c
+
+    ui/button_task.c
 
     utils/bootloader/am_bootloader.c
     utils/bootloader/am_multi_boot.c
