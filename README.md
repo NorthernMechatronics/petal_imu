@@ -158,6 +158,10 @@ detection in althele.
 ## Prototype Field Deployment Consideration
 
 The Petal development ecosystem is designed to allow users to quickly test their ideas and solutions in the field before
-committing to mass production.  Northern Mechatronics offers a Power Petal that allows the user to power their device using different battery chemistries such as primary cells or rechargeable lithium polymer cells.  Below is an example of the Core Petal, IMU Petal, and the Power Petal stacked together and powered by a rechargeable lithium polymer battery.
+committing to mass production.  Northern Mechatronics offers a Power Petal that allows the user to power their device
+using different battery chemistries such as primary cells or rechargeable lithium polymer cells.  Once firmware development
+is completed on the Petal Development Board, the Core Petal and the IMU Petal can be unplugged and then re-attach to a Power
+Petal for field deployment.  Below is an example of the Core Petal, IMU Petal, and the Power Petal stacked together and
+powered by a rechargeable lithium polymer battery.
 
 ![deployment](doc/res/petal_imu_deployment.jpg)
