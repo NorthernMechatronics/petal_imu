@@ -5,7 +5,7 @@
 ## Introduction
 
 This application demonstrates the use of the Bosch BMI270 IMU and the BMM350 magnetometer on
-the IMU Petal add on board.  It also showcase the application of the CMSIS DSP APIs in signal
+the IMU Petal add on board.  It also showcases the application of the CMSIS DSP APIs in signal
 processing.
 
 ## Requirements
