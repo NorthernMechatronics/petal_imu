@@ -5,7 +5,7 @@
 ## Introduction
 
 This application demonstrates the usage of the Bosch BMI270 IMU and the BMM350 magnetometer on
-the IMU Petal plugin board.
+the IMU Petal add on board.
 
 ## Requirements
 
