@@ -58,37 +58,45 @@ the IMU Petal plugin board.
 ## Code Description
 
 This application provides a framework that the user can customized for specific
-scenarios.  The code is organized into three layers.  The driver layer contains
+scenarios. The code is organized into three layers. The driver layer contains
 driver code for both the IMU and the magnetometer and is located in `bsp/drivers`.
 Above the driver is the hardware abstraction layer which provides high-level
-sensor configurations.  These code are located under `motion`.  Finally, the application
+sensor configurations. These code are located under `motion`. Finally, the application
 layer which is implemented by the set of files prefixed with `application_` in the root
 directory of the project.
 
 A number of features are provided in the application layer to allow the user to
 quickly implement their solution:
 
-* In `application_task.c`, a message loop framework is provided to
-demonstrate how to sample, read, and leverage the sensor data.  The
-sampling rate is adjustable by the API `application_setup_sensors`
-in `application_sensors.c` allowing the user to accommmodate different
-algorithm requirements.
+- In `application_task.c`, a message loop framework is provided to
+  demonstrate how to sample, read, and leverage the sensor data. The
+  sampling rate is adjustable by the API `application_setup_sensors`
+  in `application_sensors.c` allowing the user to accommmodate different
+  algorithm requirements.
 
-* Hard iron and isotropic soft iron calibration.
+- Hard iron and isotropic soft iron calibration.
 
-* Persistent storage solution for the magnetometer calibration data.
-This is implemented with the little filesystem (lfs).
+- Persistent storage solution for the magnetometer calibration data.
+  This is implemented with the little filesystem (lfs).
 
-* An example power savings implementation that make use of the no motion
-detection feature on the BMI270.  When no motion is detected for more than
-2s, sampling is disabled to conserve power.  Sampling is resumed as soon
-as motion occurs.  The user can configure the definition of no motion in 
-the function `imu_feature_config_no_motion`.  User can also disable
-this feature by setting `sampling_always_on` to 1 in `application_task.c`.
+- An example power savings implementation that make use of the no motion
+  detection feature on the BMI270. When no motion is detected for more than
+  2s,
+  sampling is disabled to conserve power. Sampling is resumed as soon
+  as motion
+  occurs. The user can configure the definition of no motion in
+  the function
+  `imu_feature_config_no_motion` using the `no_motion_threshold`.
+  This example
+  uses a motion threshold of 16.8mg but it can be extended to 122mg
+  if less
+  sensitivity is required.
+  User can also disable this feature by setting
+  `sampling_always_on` to 1 in `application_task.c`.
 
-* In the current implementation, only the interrupt1 pin is used on the
-BMI270.  This can be modified in `imu_interrupt_config` located in
-`motion/imu.c`.
+- In the current implementation, only the interrupt1 pin is used on the
+  BMI270. This can be modified in `imu_interrupt_config` located in
+  `motion/imu.c`.
 
 Regarding wireless communication, only the LoRaWAN communication stack is
 enabled by default (`RAT_LORAWAN_ENABLE=ON`). To enable other radio access

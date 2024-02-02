@@ -1,5 +1,5 @@
 /*
- * BSD 3-Clause License
+ *  BSD 3-Clause License
  *
  * Copyright (c) 2024, Northern Mechatronics, Inc.
  * All rights reserved.
@@ -29,29 +29,41 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _APPLICATION_TASK_H_
-#define _APPLICATION_TASK_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <math.h>
+
+#include <am_mcu_apollo.h>
+#include <am_bsp.h>
+#include <am_util.h>
+
+#include <arm_math.h>
 
 #include "imu.h"
-#include "mag.h"
 
-extern void application_task_create(uint32_t priority);
-extern void application_setup_sensors(uint32_t sampling_period_ms);
-extern void application_sensors_read(imu_context_t *imu_context, mag_context_t *mag_context, mag_cal_t *mag_cal);
-extern void application_sensors_start(void);
-extern void application_sensors_stop(void);
+#include "alg_shotdetect.h"
 
-extern void application_lfs_init(void);
-extern void application_lfs_deinit(void);
-extern void application_lfs_load_cal(mag_cal_t *cal_data);
-extern void application_lfs_write_cal(mag_cal_t *cal_data);
+#include "application.h"
+#include "application_task.h"
 
-#ifdef RAT_LORAWAN_ENABLE
-extern void application_setup_lorawan();
-#endif
+bool application_alg_shotdetect_step(imu_context_t *imu_context, alg_shotdetect_context_t *alg_shotdetect_context)
+{
+    // Strictly speaking, we don't really need to compute the actual force.
+    // This is presented for the sake of proper physical representation.
+    // One can skip the conversion of the readings to m/s^2 and
+    // the square root operation.  Of course, the threshold has to be
+    // adjusted accordingly to properly reflect the change in the numerical
+    // value.
+    float32_t force = 0.0f;
+    float32_t ax = imu_lsb_to_mps2(imu_context->ax);
+    float32_t ay = imu_lsb_to_mps2(imu_context->ay);
+    float32_t az = imu_lsb_to_mps2(imu_context->az);
+    arm_sqrt_f32(
+        (float32_t)( ax * ax + ay * ay + az * az),
+        &force
+    );
 
-#ifdef RAT_BLE_ENABLE
-extern void application_setup_ble();
-#endif
-
-#endif
+    alg_shotdetect_sample(alg_shotdetect_context, force);
+    return alg_shotdetect_step(alg_shotdetect_context);
+}

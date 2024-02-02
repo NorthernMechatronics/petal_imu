@@ -177,6 +177,7 @@ target_include_directories(
     ${BSP_INCLUDES}
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/alg/shot_detect
+    ${PROJECT_SOURCE_DIR}/application
     ${PROJECT_SOURCE_DIR}/config
     ${PROJECT_SOURCE_DIR}/littlefs
     ${PROJECT_SOURCE_DIR}/motion
@@ -192,12 +193,13 @@ target_sources(
     startup_gcc.c
     main.c
     stub.c
-    application_task_cli.c
-    application_task.c
-    application_ble.c
-    application_lorawan.c
-    application_sensors.c
-    application_lfs.c
+    application/application_task_cli.c
+    application/application_task.c
+    application/application_ble.c
+    application/application_lorawan.c
+    application/application_sensors.c
+    application/application_lfs.c
+    application/application_alg_shot_detect.c
     console_task.c
 
     alg/shot_detect/alg_shotdetect.c

@@ -80,6 +80,20 @@ static imu_context_t imu_context;
 static mag_context_t mag_context;
 static mag_cal_t mag_cal;
 
+#define ALG_SHOTDETECT_SIGNAL_LENGTH    (32)
+static alg_shotdetect_context_t alg_shotdetect_context;
+static float32_t shotdetect_signal_sampled[ALG_SHOTDETECT_SIGNAL_LENGTH];
+static float32_t shotdetect_signal_convolved[ALG_SHOTDETECT_SIGNAL_LENGTH*2];
+static float32_t shotdetect_signal_reference[ALG_SHOTDETECT_SIGNAL_LENGTH] = {
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 1.0f,
+    1.0f, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0
+};
+
+static uint32_t application_shot_count;
+
+
 static void application_led_timer_callback(TimerHandle_t timer)
 {
     application_msg_t message = { .message = APP_MSG_LED_STATUS, .size = 0, .payload = NULL };
@@ -167,18 +181,19 @@ static void application_setup_task()
     xTimerStart(application_timer_handle, portMAX_DELAY);
 }
 
-float application_sensors_heading(float x, float y)
+static void application_alg_shotdetect_setup(void)
 {
-    float heading = atan2f(y, x) * 180.0f / (float) M_PI;
-    if (heading < 0.0f)
-        heading += 360.0f;
-
-    if (heading > 360.0f)
-        heading -= 360.0f;
-
-    return heading;
+    alg_shotdetect_context.state = ALG_SHOTDETECT_IDLE;
+    alg_shotdetect_context.trigger_threshold = 1500;
+    alg_shotdetect_context.idle_threshold = 1000;
+    alg_shotdetect_context.sampled_signal = shotdetect_signal_sampled;
+    alg_shotdetect_context.convolved_signal = shotdetect_signal_convolved;
+    alg_shotdetect_context.reference_signal = shotdetect_signal_reference;
+    alg_shotdetect_context.signal_length = ALG_SHOTDETECT_SIGNAL_LENGTH;
+    alg_shotdetect_context.sampling_period_ms = 20;
+    arm_fill_f32(0.0f, alg_shotdetect_context.sampled_signal, alg_shotdetect_context.signal_length);
+    arm_fill_f32(0.0f, alg_shotdetect_context.convolved_signal, alg_shotdetect_context.signal_length);
 }
-
 
 static void application_task(void *parameter)
 {
@@ -193,6 +208,8 @@ static void application_task(void *parameter)
 #endif
 
     application_setup_task();
+
+    application_alg_shotdetect_setup();
 
     // Set sampling rate to 100Hz
     // Period is 1 / 100Hz = 10ms
@@ -252,6 +269,12 @@ static void application_task(void *parameter)
                     //
                     // Avoid doing serial print here as it is SLOW and could potentially
                     // impact algorithms that are jitter sensitive.
+
+                    if (application_alg_shotdetect_step(&imu_context, &alg_shotdetect_context))
+                    {
+                        application_shot_count++;
+                        am_util_stdio_printf("Shot Detected: %d\n", application_shot_count);
+                    }
                 }
                 break;
 
