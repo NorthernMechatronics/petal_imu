@@ -4,8 +4,9 @@
 
 ## Introduction
 
-This application demonstrates the usage of the Bosch BMI270 IMU and the BMM350 magnetometer on
-the IMU Petal add on board.
+This application demonstrates the use of the Bosch BMI270 IMU and the BMM350 magnetometer on
+the IMU Petal add on board.  It also showcases the application of the CMSIS DSP APIs in signal
+processing.
 
 ## Requirements
 
@@ -122,8 +123,9 @@ technology (RAT) such as BLE, set `RAT_BLE_ENABLE` to `ON` in
 
 ## Shot Detection Algorithm
 
-The example shot detection algorithm is meant to be used in conjunction with projectile
-weapons such as a bow. Detection is performed by convolving the incoming sampled accelerometer signal against a reference signal. A shot is detected when the net power exceeds the given threshold.
+The example shot detection algorithm was developed for achery bow to count the number of arrows that an archer had shot.
+Detection is performed by convolving the incoming sampled accelerometer signal against a reference signal. A shot is
+detected when the net power exceeds the given threshold.
 
 At any given instance in time, the parameter of interest is the applied acceleration on the bow having a unit of $\text{m/s}^2$.
 
