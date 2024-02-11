@@ -121,6 +121,7 @@ static button_press_e button_press_classification()
     if (initial_state == BUTTON_UNPRESSED)
     {
         device_button_interrupt_enable();
+        xTimerChangePeriod(button_timer_handle, pdMS_TO_TICKS(BUTTON_PRESS_GAP_MS), portMAX_DELAY);
         return BUTTON_PRESS_SHORT;
     }
 
@@ -134,7 +135,6 @@ static button_press_e button_press_classification()
     }
 
     device_button_interrupt_enable();
-
     xTimerChangePeriod(button_timer_handle, pdMS_TO_TICKS(BUTTON_PRESS_GAP_MS), portMAX_DELAY);
 
     if (duration < BUTTON_PRESS_SHORT_MS)
